@@ -1,25 +1,23 @@
 extends PanelContainer
 
-# Maps button name → BodyType int
-const BODY_BUTTONS := [
-	["Star (G)", CelestialBody.BodyType.STAR],
-	["Planet", CelestialBody.BodyType.PLANET],
-	["Moon", CelestialBody.BodyType.MOON],
-	["Gas Giant", CelestialBody.BodyType.GAS_GIANT],
-	["Asteroid", CelestialBody.BodyType.ASTEROID],
-	["Comet", CelestialBody.BodyType.COMET],
-	["Neutron Star", CelestialBody.BodyType.NEUTRON_STAR],
-	["White Dwarf", CelestialBody.BodyType.WHITE_DWARF],
-	["Black Hole", CelestialBody.BodyType.BLACK_HOLE],
-	["Nebula", CelestialBody.BodyType.NEBULA],
-	["Galaxy", CelestialBody.BodyType.GALAXY],
-]
-
 @onready var _grid: GridContainer = $VBox/Grid
 @onready var _pending_label: Label = $VBox/PendingLabel
 
 func _ready() -> void:
-	for entry in BODY_BUTTONS:
+	var body_buttons := [
+		["Star (G)", CelestialBody.BodyType.STAR],
+		["Planet", CelestialBody.BodyType.PLANET],
+		["Moon", CelestialBody.BodyType.MOON],
+		["Gas Giant", CelestialBody.BodyType.GAS_GIANT],
+		["Asteroid", CelestialBody.BodyType.ASTEROID],
+		["Comet", CelestialBody.BodyType.COMET],
+		["Neutron Star", CelestialBody.BodyType.NEUTRON_STAR],
+		["White Dwarf", CelestialBody.BodyType.WHITE_DWARF],
+		["Black Hole", CelestialBody.BodyType.BLACK_HOLE],
+		["Nebula", CelestialBody.BodyType.NEBULA],
+		["Galaxy", CelestialBody.BodyType.GALAXY],
+	]
+	for entry in body_buttons:
 		var btn := Button.new()
 		btn.text = entry[0]
 		btn.pressed.connect(_set_pending.bind(entry[1], entry[0]))

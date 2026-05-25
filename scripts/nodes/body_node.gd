@@ -13,20 +13,20 @@ var _atm_color:     Color = Color.TRANSPARENT
 var _atm_thickness: float = 0.0
 var _impact_glow:   float = 0.0  # 0..1
 
-# Minimum visible radius per body type (pixels at any zoom)
-const _MIN_VIS_PX := {
-	CelestialBody.BodyType.STAR:         14.0,
-	CelestialBody.BodyType.GAS_GIANT:    10.0,
-	CelestialBody.BodyType.PLANET:        7.0,
-	CelestialBody.BodyType.MOON:          4.0,
-	CelestialBody.BodyType.ASTEROID:      3.0,
-	CelestialBody.BodyType.COMET:         3.0,
-	CelestialBody.BodyType.NEUTRON_STAR:  6.0,
-	CelestialBody.BodyType.WHITE_DWARF:   6.0,
-	CelestialBody.BodyType.BLACK_HOLE:    9.0,
-	CelestialBody.BodyType.NEBULA:       25.0,
-	CelestialBody.BodyType.GALAXY:       35.0,
-}
+func _get_min_vis_px(body_type: int) -> float:
+	match body_type:
+		CelestialBody.BodyType.STAR:         return 14.0
+		CelestialBody.BodyType.GAS_GIANT:    return 10.0
+		CelestialBody.BodyType.PLANET:       return 7.0
+		CelestialBody.BodyType.MOON:         return 4.0
+		CelestialBody.BodyType.ASTEROID:     return 3.0
+		CelestialBody.BodyType.COMET:        return 3.0
+		CelestialBody.BodyType.NEUTRON_STAR: return 6.0
+		CelestialBody.BodyType.WHITE_DWARF:  return 6.0
+		CelestialBody.BodyType.BLACK_HOLE:   return 9.0
+		CelestialBody.BodyType.NEBULA:       return 25.0
+		CelestialBody.BodyType.GALAXY:       return 35.0
+		_:                                   return 4.0
 
 func setup(id: int) -> void:
 	body_id = id
@@ -62,7 +62,7 @@ func _process(delta: float) -> void:
 	var ppau := cam_ctrl.pixels_per_au if cam_ctrl else 200.0
 	var vis_radius_au := body.get_visual_radius()
 	var phys_px := vis_radius_au * ppau * zoom
-	var min_px  := _MIN_VIS_PX.get(body.body_type, 4.0)
+	var min_px  := _get_min_vis_px(body.body_type)
 	# Log-scale mass bonus so e.g. Jupiter looks bigger than Mars within type
 	var mass_bonus := log(max(body.mass, 1e-10) + 1.0) * 1.5
 	_draw_radius = max(phys_px, min_px + mass_bonus)
