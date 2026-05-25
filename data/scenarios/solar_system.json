@@ -1,0 +1,63 @@
+{
+  "name": "Solar System",
+  "description": "Our solar system with the Sun and 8 planets.",
+  "bodies": [
+    {
+      "name": "Sun", "type": "STAR", "spectral_class": "G",
+      "mass": 1.0, "radius": 1.0,
+      "position": [0.0, 0.0], "velocity": [0.0, 0.0],
+      "surface_temperature": 5778.0, "luminosity": 1.0,
+      "age_myr": 4600.0
+    },
+    {
+      "name": "Mercury", "type": "PLANET",
+      "mass": 1.65e-7, "radius": 0.00348,
+      "position": [0.387, 0.0], "velocity": [0.0, 10.06],
+      "surface_temperature": 440.0, "atmosphere_pressure": 0.0
+    },
+    {
+      "name": "Venus", "type": "PLANET",
+      "mass": 2.45e-6, "radius": 0.00868,
+      "position": [0.723, 0.0], "velocity": [0.0, 7.39],
+      "surface_temperature": 737.0, "atmosphere_pressure": 92.0,
+      "greenhouse_factor": 2.2
+    },
+    {
+      "name": "Earth", "type": "PLANET",
+      "mass": 3.003e-6, "radius": 0.00917,
+      "position": [1.0, 0.0], "velocity": [0.0, 6.283],
+      "surface_temperature": 288.0, "atmosphere_pressure": 1.0,
+      "greenhouse_factor": 1.15
+    },
+    {
+      "name": "Mars", "type": "PLANET",
+      "mass": 3.23e-7, "radius": 0.00487,
+      "position": [1.524, 0.0], "velocity": [0.0, 5.086],
+      "surface_temperature": 210.0, "atmosphere_pressure": 0.006
+    },
+    {
+      "name": "Jupiter", "type": "GAS_GIANT",
+      "mass": 9.546e-4, "radius": 0.10045,
+      "position": [5.203, 0.0], "velocity": [0.0, 2.756],
+      "surface_temperature": 165.0, "atmosphere_pressure": 1000.0
+    },
+    {
+      "name": "Saturn", "type": "GAS_GIANT",
+      "mass": 2.857e-4, "radius": 0.08375,
+      "position": [9.537, 0.0], "velocity": [0.0, 2.036],
+      "surface_temperature": 134.0, "atmosphere_pressure": 1000.0
+    },
+    {
+      "name": "Uranus", "type": "GAS_GIANT",
+      "mass": 4.37e-5, "radius": 0.03647,
+      "position": [19.19, 0.0], "velocity": [0.0, 1.433],
+      "surface_temperature": 76.0, "atmosphere_pressure": 1000.0
+    },
+    {
+      "name": "Neptune", "type": "GAS_GIANT",
+      "mass": 5.15e-5, "radius": 0.03549,
+      "position": [30.07, 0.0], "velocity": [0.0, 1.146],
+      "surface_temperature": 72.0, "atmosphere_pressure": 1000.0
+    }
+  ]
+}

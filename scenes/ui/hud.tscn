@@ -1,0 +1,285 @@
+[gd_scene load_steps=8 format=3 uid="uid://hud_01"]
+
+[ext_resource type="Script" path="res://scripts/ui/hud.gd" id="1_hud"]
+[ext_resource type="Script" path="res://scripts/ui/body_list.gd" id="2_blist"]
+[ext_resource type="Script" path="res://scripts/ui/inspector_panel.gd" id="3_insp"]
+[ext_resource type="Script" path="res://scripts/ui/time_controls.gd" id="4_tctrl"]
+[ext_resource type="Script" path="res://scripts/ui/scale_indicator.gd" id="5_scale"]
+[ext_resource type="Script" path="res://scripts/ui/spawn_menu.gd" id="6_spawn"]
+[ext_resource type="Script" path="res://scripts/ui/scenario_menu.gd" id="7_scene"]
+[ext_resource type="Script" path="res://scripts/ui/settings_menu.gd" id="8_sett"]
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource("1_hud")
+
+[node name="TopBar" type="HBoxContainer" parent="."]
+anchor_right = 1.0
+layout_direction = 0
+theme_override_constants/separation = 16
+offset_bottom = 40
+
+[node name="BodyCount" type="Label" parent="TopBar"]
+text = "Bodies: 0"
+vertical_alignment = 1
+
+[node name="SimTime" type="Label" parent="TopBar"]
+text = "0.00 yr"
+vertical_alignment = 1
+theme_override_colors/font_color = Color(0.7, 0.9, 1.0, 1.0)
+
+[node name="SpeedLabel" type="Label" parent="TopBar"]
+text = "1x"
+vertical_alignment = 1
+
+[node name="ReversedBanner" type="Label" parent="TopBar"]
+text = "⚠ REVERSED REALITY ⚠"
+visible = false
+theme_override_colors/font_color = Color(1.0, 0.3, 0.1, 1.0)
+theme_override_font_sizes/font_size = 18
+vertical_alignment = 1
+
+[node name="NotificationBar" type="Label" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+offset_top = 50
+offset_bottom = 75
+offset_left = -300
+offset_right = 300
+text = ""
+horizontal_alignment = 1
+theme_override_colors/font_color = Color(1.0, 0.9, 0.5, 1.0)
+
+[node name="LeftPanel" type="PanelContainer" parent="."]
+anchor_bottom = 0.8
+offset_right = 220
+
+[node name="VBox" type="VBoxContainer" parent="LeftPanel"]
+[node name="BodyListLabel" type="Label" parent="LeftPanel/VBox"]
+text = "Bodies"
+theme_override_font_sizes/font_size = 14
+
+[node name="BodyList" type="ScrollContainer" parent="LeftPanel/VBox"]
+custom_minimum_size = Vector2(0, 400)
+script = ExtResource("2_blist")
+
+[node name="VBox" type="VBoxContainer" parent="LeftPanel/VBox/BodyList"]
+
+[node name="RightPanel" type="PanelContainer" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 0.9
+offset_left = -280
+script = ExtResource("3_insp")
+
+[node name="VBox" type="VBoxContainer" parent="RightPanel"]
+
+[node name="NameLabel" type="Label" parent="RightPanel/VBox"]
+text = "Select a body"
+theme_override_font_sizes/font_size = 16
+
+[node name="TypeLabel" type="Label" parent="RightPanel/VBox"]
+text = ""
+
+[node name="MassRow" type="HBoxContainer" parent="RightPanel/VBox"]
+[node name="MassLbl" type="Label" parent="RightPanel/VBox/MassRow"]
+text = "Mass (M☉):"
+custom_minimum_size = Vector2(100, 0)
+[node name="MassSpin" type="SpinBox" parent="RightPanel/VBox/MassRow"]
+min_value = 0.0
+max_value = 1000000.0
+step = 0.001
+value = 1.0
+
+[node name="RadiusRow" type="HBoxContainer" parent="RightPanel/VBox"]
+[node name="RadiusLbl" type="Label" parent="RightPanel/VBox/RadiusRow"]
+text = "Radius (R☉):"
+custom_minimum_size = Vector2(100, 0)
+[node name="RadiusSpin" type="SpinBox" parent="RightPanel/VBox/RadiusRow"]
+min_value = 0.0
+max_value = 10000.0
+step = 0.001
+value = 1.0
+
+[node name="TempRow" type="HBoxContainer" parent="RightPanel/VBox"]
+[node name="TempLbl" type="Label" parent="RightPanel/VBox/TempRow"]
+text = "Temp (K):"
+custom_minimum_size = Vector2(100, 0)
+[node name="TempSpin" type="SpinBox" parent="RightPanel/VBox/TempRow"]
+min_value = 2.7
+max_value = 1000000000.0
+step = 1.0
+value = 5778.0
+
+[node name="VelLabel" type="Label" parent="RightPanel/VBox"]
+text = "Velocity: —"
+[node name="OrbitLabel" type="Label" parent="RightPanel/VBox"]
+text = "No orbit"
+[node name="StageLabel" type="Label" parent="RightPanel/VBox"]
+text = ""
+[node name="LumLabel" type="Label" parent="RightPanel/VBox"]
+text = ""
+[node name="EntropyLabel" type="Label" parent="RightPanel/VBox"]
+text = "Entropy: 1.000 ↑"
+
+[node name="HabitableRow" type="HBoxContainer" parent="RightPanel/VBox"]
+[node name="HabitableLbl" type="Label" parent="RightPanel/VBox/HabitableRow"]
+text = "Habitable:"
+[node name="HabitableDot" type="ColorRect" parent="RightPanel/VBox/HabitableRow"]
+custom_minimum_size = Vector2(16, 16)
+color = Color(0.8, 0.2, 0.2, 1.0)
+
+[node name="SpaghWarn" type="Label" parent="RightPanel/VBox"]
+text = "⚠ SPAGHETTIFICATION"
+visible = false
+theme_override_colors/font_color = Color(1.0, 0.2, 0.0, 1.0)
+
+[node name="PinButton" type="Button" parent="RightPanel/VBox"]
+text = "Pin"
+[node name="FollowButton" type="Button" parent="RightPanel/VBox"]
+text = "Follow"
+[node name="DeleteButton" type="Button" parent="RightPanel/VBox"]
+text = "Delete"
+
+[node name="BottomBar" type="HBoxContainer" parent="."]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -60
+offset_bottom = 0
+theme_override_constants/separation = 8
+
+[node name="TimeControls" type="HBoxContainer" parent="BottomBar"]
+script = ExtResource("4_tctrl")
+size_flags_horizontal = 3
+
+[node name="PauseBtn" type="Button" parent="BottomBar/TimeControls"]
+text = "⏸"
+custom_minimum_size = Vector2(40, 40)
+[node name="SlowerBtn" type="Button" parent="BottomBar/TimeControls"]
+text = "◀◀"
+[node name="SpeedLabel" type="Label" parent="BottomBar/TimeControls"]
+text = "1x"
+custom_minimum_size = Vector2(50, 0)
+vertical_alignment = 1
+horizontal_alignment = 1
+[node name="FasterBtn" type="Button" parent="BottomBar/TimeControls"]
+text = "▶▶"
+[node name="RewindBtn" type="Button" parent="BottomBar/TimeControls"]
+text = "REW"
+[node name="Scrubber" type="HSlider" parent="BottomBar/TimeControls"]
+custom_minimum_size = Vector2(200, 0)
+size_flags_horizontal = 3
+
+[node name="ScaleIndicator" type="Control" parent="BottomBar"]
+custom_minimum_size = Vector2(200, 40)
+script = ExtResource("5_scale")
+
+[node name="ToolbarTop" type="HBoxContainer" parent="."]
+anchor_right = 0.5
+anchor_left = 0.5
+offset_top = 45
+offset_bottom = 80
+offset_left = -200
+offset_right = 200
+
+[node name="SpawnBtn" type="Button" parent="ToolbarTop"]
+text = "Spawn"
+[node name="ScenariosBtn" type="Button" parent="ToolbarTop"]
+text = "Scenarios"
+[node name="SettingsBtn" type="Button" parent="ToolbarTop"]
+text = "Settings"
+[node name="FocusAllBtn" type="Button" parent="ToolbarTop"]
+text = "Focus All"
+[node name="ClearBtn" type="Button" parent="ToolbarTop"]
+text = "Clear"
+
+[node name="SpawnMenu" type="PanelContainer" parent="."]
+visible = false
+offset_left = 10
+offset_top = 90
+offset_right = 220
+offset_bottom = 450
+script = ExtResource("6_spawn")
+
+[node name="VBox" type="VBoxContainer" parent="SpawnMenu"]
+[node name="SpawnTitle" type="Label" parent="SpawnMenu/VBox"]
+text = "Spawn Body"
+theme_override_font_sizes/font_size = 14
+[node name="Grid" type="GridContainer" parent="SpawnMenu/VBox"]
+columns = 2
+[node name="PendingLabel" type="Label" parent="SpawnMenu/VBox"]
+text = ""
+theme_override_colors/font_color = Color(1.0, 0.8, 0.2, 1.0)
+
+[node name="ScenarioMenu" type="PanelContainer" parent="."]
+visible = false
+offset_left = 10
+offset_top = 90
+offset_right = 220
+offset_bottom = 380
+script = ExtResource("7_scene")
+
+[node name="VBox" type="VBoxContainer" parent="ScenarioMenu"]
+[node name="ScenariosTitle" type="Label" parent="ScenarioMenu/VBox"]
+text = "Load Scenario"
+theme_override_font_sizes/font_size = 14
+[node name="ScenarioList" type="VBoxContainer" parent="ScenarioMenu/VBox"]
+
+[node name="SettingsMenu" type="PanelContainer" parent="."]
+visible = false
+offset_left = 10
+offset_top = 90
+offset_right = 400
+offset_bottom = 600
+script = ExtResource("8_sett")
+
+[node name="VBox" type="VBoxContainer" parent="SettingsMenu"]
+[node name="SettingsTitle" type="Label" parent="SettingsMenu/VBox"]
+text = "Settings"
+theme_override_font_sizes/font_size = 16
+
+[node name="ReverseSection" type="VBoxContainer" parent="SettingsMenu/VBox"]
+[node name="RevSectionLabel" type="Label" parent="SettingsMenu/VBox/ReverseSection"]
+text = "— REVERSE PHYSICS —"
+theme_override_colors/font_color = Color(1.0, 0.5, 0.2, 1.0)
+[node name="ReverseToggle" type="CheckButton" parent="SettingsMenu/VBox/ReverseSection"]
+text = "REVERSE EVERYTHING  [off]"
+[node name="DampingLabel" type="Label" parent="SettingsMenu/VBox/ReverseSection"]
+text = "Velocity damping: 0.015"
+[node name="DampingSlider" type="HSlider" parent="SettingsMenu/VBox/ReverseSection"]
+min_value = 0.0
+max_value = 0.1
+step = 0.001
+value = 0.015
+editable = false
+[node name="FluctLabel" type="Label" parent="SettingsMenu/VBox/ReverseSection"]
+text = "Vacuum fluctuations: 0.0008"
+[node name="FluctSlider" type="HSlider" parent="SettingsMenu/VBox/ReverseSection"]
+min_value = 0.0
+max_value = 0.01
+step = 0.0001
+value = 0.0008
+editable = false
+
+[node name="PhysicsSection" type="VBoxContainer" parent="SettingsMenu/VBox"]
+[node name="PhysSectionLabel" type="Label" parent="SettingsMenu/VBox/PhysicsSection"]
+text = "— PHYSICS —"
+[node name="BHThetaLabel" type="Label" parent="SettingsMenu/VBox/PhysicsSection"]
+text = "Barnes-Hut θ: 0.50"
+[node name="BHTheta" type="HSlider" parent="SettingsMenu/VBox/PhysicsSection"]
+min_value = 0.1
+max_value = 1.0
+step = 0.05
+value = 0.5
+[node name="GravityToggle" type="CheckButton" parent="SettingsMenu/VBox/PhysicsSection"]
+text = "Gravity"
+button_pressed = true
+[node name="ThermalToggle" type="CheckButton" parent="SettingsMenu/VBox/PhysicsSection"]
+text = "Thermal"
+button_pressed = true
+[node name="CollisionToggle" type="CheckButton" parent="SettingsMenu/VBox/PhysicsSection"]
+text = "Collisions"
+button_pressed = true
+[node name="EvolutionToggle" type="CheckButton" parent="SettingsMenu/VBox/PhysicsSection"]
+text = "Stellar Evolution"
+button_pressed = true

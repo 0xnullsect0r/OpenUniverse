@@ -1,0 +1,24 @@
+{
+  "name": "Black Hole + Star",
+  "description": "A stellar black hole with an orbiting companion star and accretion.",
+  "bodies": [
+    {
+      "name": "Black Hole", "type": "BLACK_HOLE",
+      "mass": 10.0, "radius": 0.0,
+      "position": [0.0, 0.0], "velocity": [0.0, 0.0],
+      "surface_temperature": 0.0
+    },
+    {
+      "name": "Donor Star", "type": "STAR", "spectral_class": "B",
+      "mass": 5.0, "radius": 4.0,
+      "position": [3.0, 0.0], "velocity": [0.0, 8.15],
+      "surface_temperature": 18000.0, "age_myr": 500.0
+    },
+    {
+      "name": "Debris Planet", "type": "PLANET",
+      "mass": 3.0e-6, "radius": 0.0092,
+      "position": [15.0, 0.0], "velocity": [0.0, 3.24],
+      "surface_temperature": 100.0
+    }
+  ]
+}

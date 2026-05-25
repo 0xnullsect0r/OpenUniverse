@@ -1,0 +1,58 @@
+{
+  "O": {
+    "temp_min": 30000, "temp_max": 50000,
+    "mass_min": 16, "mass_max": 90,
+    "radius_min": 6.6, "radius_max": 15,
+    "luminosity_min": 30000, "luminosity_max": 1000000,
+    "color": [0.4, 0.5, 1.0],
+    "description": "Very hot blue stars. Short-lived, rare."
+  },
+  "B": {
+    "temp_min": 10000, "temp_max": 30000,
+    "mass_min": 2, "mass_max": 16,
+    "radius_min": 1.8, "radius_max": 6.6,
+    "luminosity_min": 25, "luminosity_max": 30000,
+    "color": [0.5, 0.7, 1.0],
+    "description": "Blue-white stars. Very luminous."
+  },
+  "A": {
+    "temp_min": 7500, "temp_max": 10000,
+    "mass_min": 1.4, "mass_max": 2.1,
+    "radius_min": 1.4, "radius_max": 1.8,
+    "luminosity_min": 5, "luminosity_max": 25,
+    "color": [0.7, 0.85, 1.0],
+    "description": "White stars. Sirius is type A."
+  },
+  "F": {
+    "temp_min": 6000, "temp_max": 7500,
+    "mass_min": 1.04, "mass_max": 1.4,
+    "radius_min": 1.15, "radius_max": 1.4,
+    "luminosity_min": 1.5, "luminosity_max": 5,
+    "color": [1.0, 1.0, 0.9],
+    "description": "Yellow-white stars."
+  },
+  "G": {
+    "temp_min": 5200, "temp_max": 6000,
+    "mass_min": 0.8, "mass_max": 1.04,
+    "radius_min": 0.96, "radius_max": 1.15,
+    "luminosity_min": 0.6, "luminosity_max": 1.5,
+    "color": [1.0, 0.95, 0.7],
+    "description": "Yellow stars. Our Sun is G2V."
+  },
+  "K": {
+    "temp_min": 3700, "temp_max": 5200,
+    "mass_min": 0.45, "mass_max": 0.8,
+    "radius_min": 0.7, "radius_max": 0.96,
+    "luminosity_min": 0.08, "luminosity_max": 0.6,
+    "color": [1.0, 0.7, 0.4],
+    "description": "Orange stars. Very long-lived."
+  },
+  "M": {
+    "temp_min": 2400, "temp_max": 3700,
+    "mass_min": 0.08, "mass_max": 0.45,
+    "radius_min": 0.1, "radius_max": 0.7,
+    "luminosity_min": 0.0001, "luminosity_max": 0.08,
+    "color": [1.0, 0.35, 0.1],
+    "description": "Red dwarf stars. Most common type. Extremely long-lived."
+  }
+}

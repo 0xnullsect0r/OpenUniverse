@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://simvp_01"]
+
+[ext_resource type="Script" path="res://scripts/nodes/simulation_viewport.gd" id="1_simvp"]
+[ext_resource type="Script" path="res://scripts/nodes/camera_controller.gd" id="2_camct"]
+
+[node name="SimulationViewport" type="SubViewportContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+stretch = true
+script = ExtResource("1_simvp")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+size = Vector2i(1920, 1080)
+render_target_update_mode = 3
+
+[node name="BodyContainer" type="Node2D" parent="SubViewport"]
+
+[node name="Camera2D" type="Camera2D" parent="SubViewport"]
+script = ExtResource("2_camct")
+zoom = Vector2(1, 1)

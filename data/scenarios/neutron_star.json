@@ -1,0 +1,24 @@
+{
+  "name": "Neutron Star",
+  "description": "A rapidly spinning neutron star (pulsar) with orbiting planets.",
+  "bodies": [
+    {
+      "name": "Pulsar PSR-1", "type": "NEUTRON_STAR",
+      "mass": 1.4, "radius": 0.0000144,
+      "position": [0.0, 0.0], "velocity": [0.0, 0.0],
+      "surface_temperature": 1000000.0
+    },
+    {
+      "name": "Pulsar Planet A", "type": "PLANET",
+      "mass": 3.0e-6, "radius": 0.0092,
+      "position": [0.19, 0.0], "velocity": [0.0, 14.8],
+      "surface_temperature": 400.0
+    },
+    {
+      "name": "Pulsar Planet B", "type": "PLANET",
+      "mass": 4.0e-6, "radius": 0.01,
+      "position": [0.36, 0.0], "velocity": [0.0, 10.75],
+      "surface_temperature": 230.0
+    }
+  ]
+}

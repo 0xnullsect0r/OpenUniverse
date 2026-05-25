@@ -1,0 +1,30 @@
+{
+  "name": "Rogue Planet",
+  "description": "A rogue planet drifting through a solar system, causing gravitational chaos.",
+  "bodies": [
+    {
+      "name": "Star", "type": "STAR", "spectral_class": "G",
+      "mass": 1.0, "radius": 1.0,
+      "position": [0.0, 0.0], "velocity": [0.0, 0.0],
+      "surface_temperature": 5778.0, "age_myr": 3000.0
+    },
+    {
+      "name": "Inner Planet", "type": "PLANET",
+      "mass": 3.0e-6, "radius": 0.0092,
+      "position": [1.0, 0.0], "velocity": [0.0, 6.283],
+      "surface_temperature": 288.0, "atmosphere_pressure": 1.0
+    },
+    {
+      "name": "Outer Planet", "type": "GAS_GIANT",
+      "mass": 9.0e-4, "radius": 0.095,
+      "position": [5.0, 0.0], "velocity": [0.0, 2.81],
+      "surface_temperature": 160.0
+    },
+    {
+      "name": "Rogue Planet", "type": "GAS_GIANT",
+      "mass": 3.0e-4, "radius": 0.065,
+      "position": [-20.0, 5.0], "velocity": [3.5, -0.5],
+      "surface_temperature": 50.0
+    }
+  ]
+}
