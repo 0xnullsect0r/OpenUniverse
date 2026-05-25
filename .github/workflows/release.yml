@@ -22,11 +22,6 @@ jobs:
             preset: "Windows Desktop"
             out_file: "OpenUniverse.exe"
 
-          - platform: macOS
-            artifact: macos
-            preset: "macOS"
-            out_file: "OpenUniverse.zip"
-
           - platform: Linux x86_64
             artifact: linux-x86_64
             preset: "Linux x86_64"
@@ -328,10 +323,6 @@ jobs:
           find "release_assets/${{ env.EXPORT_NAME }}-windows/" -name "*.exe" \
             -exec cp {} "final_assets/${{ env.EXPORT_NAME }}-${V}-windows.exe" \; 2>/dev/null || true
 
-          # macOS .zip (Godot exports macOS as zip from Linux)
-          find "release_assets/${{ env.EXPORT_NAME }}-macos/" \( -name "*.zip" -o -name "*.app" \) \
-            -exec cp {} "final_assets/${{ env.EXPORT_NAME }}-${V}-macos.zip" \; 2>/dev/null || true
-
           # Linux x86_64
           find "release_assets/${{ env.EXPORT_NAME }}-linux-x86_64/" -name "*.x86_64" \
             -exec cp {} "final_assets/${{ env.EXPORT_NAME }}-${V}-linux.x86_64" \; 2>/dev/null || true
@@ -371,7 +362,6 @@ jobs:
             | Platform | File |
             |---|---|
             | Windows | `*-windows.exe` |
-            | macOS | `*-macos.zip` (extract and run the .app inside) |
             | Linux x86_64 | `*-linux.x86_64` — `chmod +x` then run |
             | Linux ARM64 | `*-linux.arm64` — `chmod +x` then run |
             | Debian / Ubuntu | `*.deb` — `sudo dpkg -i *.deb` |
