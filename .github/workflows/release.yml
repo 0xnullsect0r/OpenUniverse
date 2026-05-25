@@ -82,6 +82,7 @@ jobs:
         with:
           name: ${{ env.EXPORT_NAME }}-${{ matrix.artifact }}
           path: build/${{ matrix.artifact }}/
+          if-no-files-found: warn
           retention-days: 7
 
   package-deb:
@@ -103,6 +104,7 @@ jobs:
           VERSION="${GITHUB_REF_NAME#v}"
           PKG_ROOT="deb_pkg"
           BIN_SRC="bin/${{ env.EXPORT_NAME }}.x86_64"
+          PCK_SRC="bin/${{ env.EXPORT_NAME }}.pck"
 
           chmod +x "$BIN_SRC"
           mkdir -p "$PKG_ROOT/DEBIAN" \
@@ -110,6 +112,10 @@ jobs:
                    "$PKG_ROOT/usr/share/applications"
 
           install -Dm755 "$BIN_SRC" "$PKG_ROOT/usr/games/openuni-verse"
+          # Install .pck alongside binary (required for game to run)
+          if [ -f "$PCK_SRC" ]; then
+            install -Dm644 "$PCK_SRC" "$PKG_ROOT/usr/games/openuni-verse.pck"
+          fi
 
           # Write control file — no heredoc to avoid YAML-indentation in content
           {
@@ -163,12 +169,19 @@ jobs:
           VERSION="${GITHUB_REF_NAME#v}"
           RPM_VERSION="${VERSION//-/_}"
           BIN_SRC="$(pwd)/bin/${{ env.EXPORT_NAME }}.x86_64"
+          PCK_SRC="$(pwd)/bin/${{ env.EXPORT_NAME }}.pck"
 
           chmod +x "$BIN_SRC"
           mkdir -p ~/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
 
-          # Put binary in SOURCES so rpmbuild can find it
+          # Put binary (and .pck if present) in SOURCES so rpmbuild can find them
           cp "$BIN_SRC" ~/rpmbuild/SOURCES/openuni-verse
+          if [ -f "$PCK_SRC" ]; then
+            cp "$PCK_SRC" ~/rpmbuild/SOURCES/openuni-verse.pck
+          fi
+
+          HAS_PCK="false"
+          [ -f "$PCK_SRC" ] && HAS_PCK="true"
 
           SPEC="$HOME/rpmbuild/SPECS/openuni-verse.spec"
           {
@@ -179,15 +192,20 @@ jobs:
             echo "License:        MIT"
             echo "BuildArch:      x86_64"
             echo "Source0:        openuni-verse"
+            if [ "$HAS_PCK" = "true" ]; then echo "Source1:        openuni-verse.pck"; fi
             echo ""
             echo "%description"
             echo "A Universe Sandbox-style simulator with full reverse physics mode."
             echo ""
             echo "%install"
             echo "install -Dm755 %{_sourcedir}/openuni-verse %{buildroot}/usr/games/openuni-verse"
+            if [ "$HAS_PCK" = "true" ]; then
+              echo "install -Dm644 %{_sourcedir}/openuni-verse.pck %{buildroot}/usr/games/openuni-verse.pck"
+            fi
             echo ""
             echo "%files"
             echo "/usr/games/openuni-verse"
+            if [ "$HAS_PCK" = "true" ]; then echo "/usr/games/openuni-verse.pck"; fi
             echo ""
             echo "%changelog"
             printf "* %s GitHub Actions <noreply@github.com> - %s-1\n" \
@@ -247,9 +265,15 @@ jobs:
         run: |
           set -euo pipefail
           BIN_SRC="bin/${{ env.EXPORT_NAME }}.x86_64"
+          PCK_SRC="bin/${{ env.EXPORT_NAME }}.pck"
           chmod +x "$BIN_SRC"
           mkdir -p flatpak_src
           cp "$BIN_SRC" flatpak_src/openuni-verse
+          HAS_PCK="false"
+          if [ -f "$PCK_SRC" ]; then
+            cp "$PCK_SRC" flatpak_src/openuni-verse.pck
+            HAS_PCK="true"
+          fi
 
           # Write flatpak manifest — avoid heredoc indentation
           {
@@ -270,9 +294,16 @@ jobs:
             echo "    buildsystem: simple"
             echo "    build-commands:"
             echo "      - install -Dm755 openuni-verse /app/bin/openuni-verse"
+            if [ "$HAS_PCK" = "true" ]; then
+              echo "      - install -Dm644 openuni-verse.pck /app/bin/openuni-verse.pck"
+            fi
             echo "    sources:"
             echo "      - type: file"
             echo "        path: flatpak_src/openuni-verse"
+            if [ "$HAS_PCK" = "true" ]; then
+              echo "      - type: file"
+              echo "        path: flatpak_src/openuni-verse.pck"
+            fi
           } > com.github.openuni-verse.yml
 
       - name: Build Flatpak bundle
@@ -313,16 +344,29 @@ jobs:
         run: |
           set -euo pipefail
           V="${GITHUB_REF_NAME}"
+          WS="$(pwd)"
           mkdir -p final_assets
 
-          # Windows .exe
-          find "release_assets/${{ env.EXPORT_NAME }}-windows/" -name "*.exe" \
-            -exec cp {} "final_assets/${{ env.EXPORT_NAME }}-${V}-windows.exe" \; 2>/dev/null || true
+          # Windows: bundle .exe + .pck into a zip so users always get both files
+          WIN_DIR="release_assets/${{ env.EXPORT_NAME }}-windows"
+          if [ -d "$WIN_DIR" ]; then
+            WIN_ZIP="$WS/final_assets/${{ env.EXPORT_NAME }}-${V}-windows.zip"
+            (cd "$WIN_DIR" && zip -j "$WIN_ZIP" .) 2>/dev/null || true
+            # Also keep standalone .exe for convenience
+            find "$WIN_DIR" -name "*.exe" \
+              -exec cp {} "final_assets/${{ env.EXPORT_NAME }}-${V}-windows.exe" \; 2>/dev/null || true
+          fi
 
-          # Linux x86_64
-          find "release_assets/${{ env.EXPORT_NAME }}-linux-x86_64/" -name "*.x86_64" \
-            -exec cp {} "final_assets/${{ env.EXPORT_NAME }}-${V}-linux.x86_64" \; 2>/dev/null || true
-          find "final_assets/" -name "*.x86_64" -exec chmod +x {} \; 2>/dev/null || true
+          # Linux x86_64: bundle binary + .pck into a tarball
+          LIN_DIR="release_assets/${{ env.EXPORT_NAME }}-linux-x86_64"
+          if [ -d "$LIN_DIR" ]; then
+            find "$LIN_DIR" -name "*.x86_64" -exec chmod +x {} \; 2>/dev/null || true
+            TAR_NAME="${{ env.EXPORT_NAME }}-${V}-linux-x86_64.tar.gz"
+            (cd "$LIN_DIR" && tar czf "$WS/final_assets/$TAR_NAME" .) 2>/dev/null || true
+            # Also keep standalone binary
+            find "$LIN_DIR" -name "*.x86_64" \
+              -exec cp {} "final_assets/${{ env.EXPORT_NAME }}-${V}-linux.x86_64" \; 2>/dev/null || true
+          fi
 
           # .deb
           find "release_assets/${{ env.EXPORT_NAME }}-deb/" -name "*.deb" \
@@ -351,13 +395,16 @@ jobs:
 
             ### Downloads
 
-            | Platform | File |
-            |---|---|
-            | Windows | `*-windows.exe` |
-            | Linux x86_64 | `*-linux.x86_64` — `chmod +x` then run |
-            | Debian / Ubuntu | `*.deb` — `sudo dpkg -i *.deb` |
-            | Fedora / RHEL | `*.rpm` — `sudo rpm -i *.rpm` |
-            | Flatpak (any distro) | `*.flatpak` — `flatpak install *.flatpak` |
+            > **Note:** The game requires both the binary and the `.pck` data file.
+            > Use the `.zip` / `.tar.gz` bundles — they contain both files together.
+
+            | Platform | Recommended | Standalone binary |
+            |---|---|---|
+            | Windows | `*-windows.zip` (extract & run `.exe`) | `*-windows.exe` + `.pck` |
+            | Linux x86_64 | `*-linux-x86_64.tar.gz` (extract & run) | `*-linux.x86_64` + `.pck` |
+            | Debian / Ubuntu | `*.deb` — `sudo dpkg -i *.deb` | — |
+            | Fedora / RHEL | `*.rpm` — `sudo rpm -i *.rpm` | — |
+            | Flatpak (any distro) | `*.flatpak` — `flatpak install *.flatpak` | — |
 
             ### What's new
             See the [commit history](https://github.com/${{ github.repository }}/commits/${{ github.ref_name }}) for details.
