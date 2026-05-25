@@ -27,10 +27,6 @@ jobs:
             preset: "Linux x86_64"
             out_file: "OpenUniverse.x86_64"
 
-          - platform: Linux arm64
-            artifact: linux-arm64
-            preset: "Linux arm64"
-            out_file: "OpenUniverse.arm64"
 
     steps:
       - uses: actions/checkout@v4
@@ -328,10 +324,6 @@ jobs:
             -exec cp {} "final_assets/${{ env.EXPORT_NAME }}-${V}-linux.x86_64" \; 2>/dev/null || true
           find "final_assets/" -name "*.x86_64" -exec chmod +x {} \; 2>/dev/null || true
 
-          # Linux arm64
-          find "release_assets/${{ env.EXPORT_NAME }}-linux-arm64/" -name "*.arm64" \
-            -exec cp {} "final_assets/${{ env.EXPORT_NAME }}-${V}-linux.arm64" \; 2>/dev/null || true
-
           # .deb
           find "release_assets/${{ env.EXPORT_NAME }}-deb/" -name "*.deb" \
             -exec cp {} "final_assets/" \; 2>/dev/null || true
@@ -363,7 +355,6 @@ jobs:
             |---|---|
             | Windows | `*-windows.exe` |
             | Linux x86_64 | `*-linux.x86_64` — `chmod +x` then run |
-            | Linux ARM64 | `*-linux.arm64` — `chmod +x` then run |
             | Debian / Ubuntu | `*.deb` — `sudo dpkg -i *.deb` |
             | Fedora / RHEL | `*.rpm` — `sudo rpm -i *.rpm` |
             | Flatpak (any distro) | `*.flatpak` — `flatpak install *.flatpak` |
