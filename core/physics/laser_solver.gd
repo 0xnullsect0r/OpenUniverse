@@ -40,7 +40,7 @@ func apply_laser(target: CelestialBody, heat: bool, delta: float) -> float:
 	if heat and target.surface_temperature > 2000.0:
 		target.surface_ice   = max(target.surface_ice   - 0.01 * delta, 0.0)
 		target.surface_water = max(target.surface_water - 0.005 * delta, 0.0)
-		target.surface_rock  = max(target.surface_rock  + 0.005 * delta, 1.0)
+		target.surface_rock  = min(target.surface_rock  + 0.005 * delta, 1.0)
 
 	target.update_derived_properties()
 	return target.surface_temperature

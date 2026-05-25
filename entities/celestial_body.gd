@@ -270,10 +270,10 @@ func _planet_color() -> Color:
 	else:
 		col = Color(0.6, 0.55, 0.45)
 	# Hot planet override
-	if surface_temperature > 700.0:
-		col = col.blend(Color(0.9, 0.4, 0.1, 0.7))
-	elif surface_temperature > 1500.0:
+	if surface_temperature > 1500.0:
 		col = Color(0.95, 0.3, 0.05)
+	elif surface_temperature > 700.0:
+		col = col.blend(Color(0.9, 0.4, 0.1, 0.7))
 	return col
 
 func get_type_name() -> String:

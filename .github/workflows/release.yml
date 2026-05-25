@@ -6,7 +6,7 @@ on:
       - 'v*'
 
 env:
-  GODOT_VERSION: "4.3"
+  GODOT_VERSION: "4.6.3"
   EXPORT_NAME: "OpenUniverse"
 
 jobs:
@@ -19,54 +19,72 @@ jobs:
         include:
           - platform: Windows Desktop
             artifact: windows
-            extension: .exe
             preset: "Windows Desktop"
+            out_file: "OpenUniverse.exe"
 
           - platform: macOS
             artifact: macos
-            extension: .app
             preset: "macOS"
+            out_file: "OpenUniverse.zip"
 
           - platform: Linux x86_64
             artifact: linux-x86_64
-            extension: .x86_64
-            preset: "Linux/X11 x86_64"
+            preset: "Linux x86_64"
+            out_file: "OpenUniverse.x86_64"
 
           - platform: Linux arm64
             artifact: linux-arm64
-            extension: .arm64
-            preset: "Linux/X11 arm64"
+            preset: "Linux arm64"
+            out_file: "OpenUniverse.arm64"
 
     steps:
       - uses: actions/checkout@v4
 
       - name: Install Godot ${{ env.GODOT_VERSION }}
         run: |
-          wget -q "https://github.com/godotengine/godot/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64.zip" -O godot.zip
+          wget -q \
+            "https://github.com/godotengine/godot/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64.zip" \
+            -O godot.zip
           unzip -q godot.zip
-          mv "Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64" /usr/local/bin/godot
-          chmod +x /usr/local/bin/godot
+          sudo mv "Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64" /usr/local/bin/godot
+          sudo chmod +x /usr/local/bin/godot
+          godot --version
+
+      - name: Cache export templates
+        id: cache-templates
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/godot/export_templates
+          key: godot-templates-${{ env.GODOT_VERSION }}
 
       - name: Install export templates
+        if: steps.cache-templates.outputs.cache-hit != 'true'
         run: |
-          mkdir -p ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable
-          wget -q "https://github.com/godotengine/godot/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_export_templates.tpz" -O templates.tpz
-          unzip -q templates.tpz -d templates_extracted
-          mv templates_extracted/templates/* ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable/
+          mkdir -p "$HOME/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable"
+          wget -q \
+            "https://github.com/godotengine/godot/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_export_templates.tpz" \
+            -O templates.tpz
+          unzip -q templates.tpz
+          mv templates/* "$HOME/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable/"
+          rm -rf templates templates.tpz
 
-      - name: Import project (generate .godot cache)
+      - name: Import project assets
         run: |
-          godot --headless --quit --path . 2>&1 | tail -5 || true
-          sleep 2
+          # Run headless to generate .godot/ import cache, then quit
+          timeout 60 godot --headless --quit 2>&1 | tail -10 || true
+          # Give it a moment to flush writes
+          sleep 3
 
-      - name: Create export output directory
-        run: mkdir -p build/${{ matrix.artifact }}
+      - name: Create output directory
+        run: mkdir -p "build/${{ matrix.artifact }}"
 
       - name: Export ${{ matrix.platform }}
         run: |
-          godot --headless --export-release "${{ matrix.preset }}" \
-            "build/${{ matrix.artifact }}/${{ env.EXPORT_NAME }}${{ matrix.extension }}" \
-            --path . 2>&1
+          godot --headless \
+            --export-release "${{ matrix.preset }}" \
+            "$(pwd)/build/${{ matrix.artifact }}/${{ matrix.out_file }}" \
+            2>&1
+          ls -lh "build/${{ matrix.artifact }}/" || true
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -86,42 +104,44 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ${{ env.EXPORT_NAME }}-linux-x86_64
-          path: build/linux-x86_64/
+          path: bin/
 
       - name: Build .deb package
         run: |
-          PKG_ROOT="deb_pkg"
+          set -euo pipefail
           VERSION="${GITHUB_REF_NAME#v}"
-          BIN_NAME="openuni-verse"
+          PKG_ROOT="deb_pkg"
+          BIN_SRC="bin/${{ env.EXPORT_NAME }}.x86_64"
 
-          mkdir -p "$PKG_ROOT/DEBIAN"
-          mkdir -p "$PKG_ROOT/usr/games"
-          mkdir -p "$PKG_ROOT/usr/share/applications"
-          mkdir -p "$PKG_ROOT/usr/share/pixmaps"
+          chmod +x "$BIN_SRC"
+          mkdir -p "$PKG_ROOT/DEBIAN" \
+                   "$PKG_ROOT/usr/games" \
+                   "$PKG_ROOT/usr/share/applications"
 
-          cp "build/linux-x86_64/${{ env.EXPORT_NAME }}.x86_64" "$PKG_ROOT/usr/games/$BIN_NAME"
-          chmod +x "$PKG_ROOT/usr/games/$BIN_NAME"
+          install -Dm755 "$BIN_SRC" "$PKG_ROOT/usr/games/openuni-verse"
 
-          cat > "$PKG_ROOT/DEBIAN/control" <<EOF
-          Package: openuni-verse
-          Version: $VERSION
-          Section: games
-          Priority: optional
-          Architecture: amd64
-          Maintainer: OpenUniverse <noreply@github.com>
-          Description: OpenUniverse — Reverse Universe Simulator
-           A Universe Sandbox-style simulator with full reverse physics mode.
-          EOF
+          # Write control file — no heredoc to avoid YAML-indentation in content
+          {
+            echo "Package: openuni-verse"
+            echo "Version: $VERSION"
+            echo "Section: games"
+            echo "Priority: optional"
+            echo "Architecture: amd64"
+            echo "Maintainer: OpenUniverse <noreply@github.com>"
+            echo "Description: OpenUniverse -- Reverse Universe Simulator"
+            echo " A Universe Sandbox-style simulator with full reverse physics mode."
+          } > "$PKG_ROOT/DEBIAN/control"
 
-          cat > "$PKG_ROOT/usr/share/applications/openuni-verse.desktop" <<EOF
-          [Desktop Entry]
-          Name=OpenUniverse
-          Exec=/usr/games/$BIN_NAME
-          Type=Application
-          Categories=Game;Simulation;
-          EOF
+          {
+            echo "[Desktop Entry]"
+            echo "Name=OpenUniverse"
+            echo "Exec=/usr/games/openuni-verse"
+            echo "Type=Application"
+            echo "Categories=Game;Simulation;"
+          } > "$PKG_ROOT/usr/share/applications/openuni-verse.desktop"
 
-          dpkg-deb --build "$PKG_ROOT" "${{ env.EXPORT_NAME }}-$VERSION-amd64.deb"
+          dpkg-deb --build "$PKG_ROOT" "${{ env.EXPORT_NAME }}-${VERSION}-amd64.deb"
+          ls -lh ./*.deb
 
       - name: Upload .deb artifact
         uses: actions/upload-artifact@v4
@@ -144,45 +164,49 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ${{ env.EXPORT_NAME }}-linux-x86_64
-          path: build/linux-x86_64/
+          path: bin/
 
       - name: Build .rpm package
         run: |
+          set -euo pipefail
           VERSION="${GITHUB_REF_NAME#v}"
           RPM_VERSION="${VERSION//-/_}"
+          BIN_SRC="$(pwd)/bin/${{ env.EXPORT_NAME }}.x86_64"
+
+          chmod +x "$BIN_SRC"
           mkdir -p ~/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
-          mkdir -p "~/rpmbuild/BUILDROOT/openuni-verse-$RPM_VERSION-1.x86_64/usr/games"
 
-          cp "build/linux-x86_64/${{ env.EXPORT_NAME }}.x86_64" \
-             "$HOME/rpmbuild/BUILDROOT/openuni-verse-$RPM_VERSION-1.x86_64/usr/games/openuni-verse"
+          # Put binary in SOURCES so rpmbuild can find it
+          cp "$BIN_SRC" ~/rpmbuild/SOURCES/openuni-verse
 
-          cat > ~/rpmbuild/SPECS/openuni-verse.spec <<EOF
-          Name:           openuni-verse
-          Version:        $RPM_VERSION
-          Release:        1
-          Summary:        OpenUniverse — Reverse Universe Simulator
-          License:        MIT
-          BuildArch:      x86_64
+          SPEC="$HOME/rpmbuild/SPECS/openuni-verse.spec"
+          {
+            echo "Name:           openuni-verse"
+            echo "Version:        $RPM_VERSION"
+            echo "Release:        1"
+            echo "Summary:        OpenUniverse -- Reverse Universe Simulator"
+            echo "License:        MIT"
+            echo "BuildArch:      x86_64"
+            echo "Source0:        openuni-verse"
+            echo ""
+            echo "%description"
+            echo "A Universe Sandbox-style simulator with full reverse physics mode."
+            echo ""
+            echo "%install"
+            echo "install -Dm755 %{_sourcedir}/openuni-verse %{buildroot}/usr/games/openuni-verse"
+            echo ""
+            echo "%files"
+            echo "/usr/games/openuni-verse"
+            echo ""
+            echo "%changelog"
+            printf "* %s GitHub Actions <noreply@github.com> - %s-1\n" \
+              "$(date '+%a %b %d %Y')" "$RPM_VERSION"
+            echo "- Release $RPM_VERSION"
+          } > "$SPEC"
 
-          %description
-          A Universe Sandbox-style simulator with full reverse physics mode.
-
-          %install
-          mkdir -p %{buildroot}/usr/games
-          cp $HOME/rpmbuild/BUILDROOT/openuni-verse-$RPM_VERSION-1.x86_64/usr/games/openuni-verse \
-             %{buildroot}/usr/games/openuni-verse
-          chmod +x %{buildroot}/usr/games/openuni-verse
-
-          %files
-          /usr/games/openuni-verse
-
-          %changelog
-          * $(date "+%a %b %d %Y") GitHub Actions <noreply@github.com> - $RPM_VERSION-1
-          - Automated release ${{ github.ref_name }}
-          EOF
-
-          rpmbuild -bb ~/rpmbuild/SPECS/openuni-verse.spec
+          rpmbuild -bb "$SPEC"
           cp ~/rpmbuild/RPMS/x86_64/*.rpm .
+          ls -lh ./*.rpm
 
       - name: Upload .rpm artifact
         uses: actions/upload-artifact@v4
@@ -198,51 +222,80 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Flatpak tools
-        run: |
-          sudo apt-get install -y flatpak flatpak-builder
-          sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-          sudo flatpak install -y flathub org.freedesktop.Platform//23.08 org.freedesktop.Sdk//23.08
-
       - name: Download Linux x86_64 build
         uses: actions/download-artifact@v4
         with:
           name: ${{ env.EXPORT_NAME }}-linux-x86_64
-          path: build/linux-x86_64/
+          path: bin/
 
-      - name: Create Flatpak manifest
+      - name: Install Flatpak tools
         run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y flatpak flatpak-builder
+
+      - name: Add Flathub remote
+        run: |
+          sudo flatpak remote-add --if-not-exists flathub \
+            https://dl.flathub.org/repo/flathub.flatpakrepo
+
+      - name: Cache Flatpak SDK
+        id: cache-flatpak-sdk
+        uses: actions/cache@v4
+        with:
+          path: /var/lib/flatpak
+          key: flatpak-sdk-freedesktop-23.08-v1
+
+      - name: Install Flatpak SDK
+        if: steps.cache-flatpak-sdk.outputs.cache-hit != 'true'
+        run: |
+          sudo flatpak install -y --noninteractive flathub \
+            org.freedesktop.Platform//23.08 \
+            org.freedesktop.Sdk//23.08
+
+      - name: Prepare binary and manifest
+        run: |
+          set -euo pipefail
+          BIN_SRC="bin/${{ env.EXPORT_NAME }}.x86_64"
+          chmod +x "$BIN_SRC"
           mkdir -p flatpak_src
-          cp "build/linux-x86_64/${{ env.EXPORT_NAME }}.x86_64" flatpak_src/openuni-verse
-          chmod +x flatpak_src/openuni-verse
+          cp "$BIN_SRC" flatpak_src/openuni-verse
 
-          cat > com.github.openuni-verse.yml <<EOF
-          app-id: com.github.openuni-verse
-          runtime: org.freedesktop.Platform
-          runtime-version: '23.08'
-          sdk: org.freedesktop.Sdk
-          command: openuni-verse
+          # Write flatpak manifest — avoid heredoc indentation
+          {
+            echo "app-id: com.github.openuni-verse"
+            echo "runtime: org.freedesktop.Platform"
+            echo "runtime-version: '23.08'"
+            echo "sdk: org.freedesktop.Sdk"
+            echo "command: openuni-verse"
+            echo ""
+            echo "finish-args:"
+            echo "  - --share=ipc"
+            echo "  - --socket=fallback-x11"
+            echo "  - --socket=wayland"
+            echo "  - --device=dri"
+            echo ""
+            echo "modules:"
+            echo "  - name: openuni-verse"
+            echo "    buildsystem: simple"
+            echo "    build-commands:"
+            echo "      - install -Dm755 openuni-verse /app/bin/openuni-verse"
+            echo "    sources:"
+            echo "      - type: file"
+            echo "        path: flatpak_src/openuni-verse"
+          } > com.github.openuni-verse.yml
 
-          finish-args:
-            - --share=ipc
-            - --socket=fallback-x11
-            - --socket=wayland
-            - --device=dri
-
-          modules:
-            - name: openuni-verse
-              buildsystem: simple
-              build-commands:
-                - install -Dm755 openuni-verse /app/bin/openuni-verse
-              sources:
-                - type: file
-                  path: flatpak_src/openuni-verse
-          EOF
-
-      - name: Build Flatpak
+      - name: Build Flatpak bundle
         run: |
-          flatpak-builder --repo=flatpak_repo --force-clean flatpak_build com.github.openuni-verse.yml
-          flatpak build-bundle flatpak_repo "${{ env.EXPORT_NAME }}.flatpak" com.github.openuni-verse
+          flatpak-builder \
+            --user \
+            --repo=flatpak_repo \
+            --force-clean \
+            flatpak_build \
+            com.github.openuni-verse.yml
+          flatpak build-bundle flatpak_repo \
+            "${{ env.EXPORT_NAME }}.flatpak" \
+            com.github.openuni-verse
+          ls -lh ./*.flatpak
 
       - name: Upload .flatpak artifact
         uses: actions/upload-artifact@v4
@@ -265,51 +318,45 @@ jobs:
         with:
           path: release_assets/
 
-      - name: List release assets
-        run: find release_assets/ -type f | sort
-
-      - name: Rename and collect binaries
+      - name: Collect and rename release files
         run: |
-          VERSION="${GITHUB_REF_NAME}"
+          set -euo pipefail
+          V="${GITHUB_REF_NAME}"
           mkdir -p final_assets
 
           # Windows .exe
-          find release_assets/${{ env.EXPORT_NAME }}-windows/ -name "*.exe" \
-            -exec cp {} "final_assets/${{ env.EXPORT_NAME }}-${VERSION}-windows.exe" \; 2>/dev/null || true
+          find "release_assets/${{ env.EXPORT_NAME }}-windows/" -name "*.exe" \
+            -exec cp {} "final_assets/${{ env.EXPORT_NAME }}-${V}-windows.exe" \; 2>/dev/null || true
 
-          # macOS .app (zip it if directory)
-          if find release_assets/${{ env.EXPORT_NAME }}-macos/ -name "*.app" -type d | grep -q .; then
-            find release_assets/${{ env.EXPORT_NAME }}-macos/ -name "*.app" -type d | while read d; do
-              zip -rq "final_assets/${{ env.EXPORT_NAME }}-${VERSION}-macos.app.zip" "$d"
-            done
-          else
-            find release_assets/${{ env.EXPORT_NAME }}-macos/ -name "*.app" \
-              -exec cp {} "final_assets/${{ env.EXPORT_NAME }}-${VERSION}-macos.app" \; 2>/dev/null || true
-          fi
+          # macOS .zip (Godot exports macOS as zip from Linux)
+          find "release_assets/${{ env.EXPORT_NAME }}-macos/" \( -name "*.zip" -o -name "*.app" \) \
+            -exec cp {} "final_assets/${{ env.EXPORT_NAME }}-${V}-macos.zip" \; 2>/dev/null || true
 
           # Linux x86_64
-          find release_assets/${{ env.EXPORT_NAME }}-linux-x86_64/ -name "*.x86_64" \
-            -exec cp {} "final_assets/${{ env.EXPORT_NAME }}-${VERSION}-linux.x86_64" \; 2>/dev/null || true
+          find "release_assets/${{ env.EXPORT_NAME }}-linux-x86_64/" -name "*.x86_64" \
+            -exec cp {} "final_assets/${{ env.EXPORT_NAME }}-${V}-linux.x86_64" \; 2>/dev/null || true
+          find "final_assets/" -name "*.x86_64" -exec chmod +x {} \; 2>/dev/null || true
 
           # Linux arm64
-          find release_assets/${{ env.EXPORT_NAME }}-linux-arm64/ -name "*.arm64" \
-            -exec cp {} "final_assets/${{ env.EXPORT_NAME }}-${VERSION}-linux.arm64" \; 2>/dev/null || true
+          find "release_assets/${{ env.EXPORT_NAME }}-linux-arm64/" -name "*.arm64" \
+            -exec cp {} "final_assets/${{ env.EXPORT_NAME }}-${V}-linux.arm64" \; 2>/dev/null || true
 
           # .deb
-          find release_assets/${{ env.EXPORT_NAME }}-deb/ -name "*.deb" \
+          find "release_assets/${{ env.EXPORT_NAME }}-deb/" -name "*.deb" \
             -exec cp {} "final_assets/" \; 2>/dev/null || true
 
           # .rpm
-          find release_assets/${{ env.EXPORT_NAME }}-rpm/ -name "*.rpm" \
+          find "release_assets/${{ env.EXPORT_NAME }}-rpm/" -name "*.rpm" \
             -exec cp {} "final_assets/" \; 2>/dev/null || true
 
           # .flatpak
-          find release_assets/${{ env.EXPORT_NAME }}-flatpak/ -name "*.flatpak" \
-            -exec cp {} "final_assets/${{ env.EXPORT_NAME }}-${VERSION}.flatpak" \; 2>/dev/null || true
+          find "release_assets/${{ env.EXPORT_NAME }}-flatpak/" -name "*.flatpak" \
+            -exec cp {} "final_assets/${{ env.EXPORT_NAME }}-${V}.flatpak" \; 2>/dev/null || true
 
+          echo "=== Release assets ==="
           ls -lh final_assets/
 
-      - name: Create release
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           name: "OpenUniverse ${{ github.ref_name }}"
@@ -317,20 +364,22 @@ jobs:
             ## OpenUniverse ${{ github.ref_name }}
 
             A Universe Sandbox-style simulator with full **Reverse Physics** mode.
+            Built with Godot ${{ env.GODOT_VERSION }}.
 
             ### Downloads
+
             | Platform | File |
             |---|---|
             | Windows | `*-windows.exe` |
-            | macOS | `*-macos.app.zip` |
-            | Linux x86_64 | `*-linux.x86_64` |
-            | Linux ARM64 | `*-linux.arm64` |
-            | Debian/Ubuntu | `*.deb` |
-            | Fedora/RHEL | `*.rpm` |
-            | Flatpak (any distro) | `*.flatpak` |
+            | macOS | `*-macos.zip` (extract and run the .app inside) |
+            | Linux x86_64 | `*-linux.x86_64` — `chmod +x` then run |
+            | Linux ARM64 | `*-linux.arm64` — `chmod +x` then run |
+            | Debian / Ubuntu | `*.deb` — `sudo dpkg -i *.deb` |
+            | Fedora / RHEL | `*.rpm` — `sudo rpm -i *.rpm` |
+            | Flatpak (any distro) | `*.flatpak` — `flatpak install *.flatpak` |
 
             ### What's new
-            See [CHANGELOG](https://github.com/${{ github.repository }}/commits/${{ github.ref_name }}) for commit history.
+            See the [commit history](https://github.com/${{ github.repository }}/commits/${{ github.ref_name }}) for details.
           files: final_assets/*
           draft: false
           prerelease: ${{ contains(github.ref_name, '-') }}

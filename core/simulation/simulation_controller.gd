@@ -75,7 +75,7 @@ func _physics_process(delta: float) -> void:
 	_collision.update(bodies)
 
 	# ---- 7. Hubble flow ----
-	if PhysicsConstants.HUBBLE_SIGN != 1.0 or abs(PhysicsConstants.HUBBLE_SIGN) != 1.0:
+	if PhysicsConstants.HUBBLE_SIGN != 1.0:
 		_apply_hubble(bodies, sim_dt)
 
 	# ---- 8. White-hole emissions ----
