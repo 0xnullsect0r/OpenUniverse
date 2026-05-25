@@ -85,6 +85,8 @@ func focus_all() -> void:
 	var bbox := VectorMath.bounding_box(positions)
 	position = bbox.get_center()
 	var vp := get_viewport().get_visible_rect().size
-	var scale_x := vp.x / max(bbox.size.x, 1.0) * 0.8
-	var scale_y := vp.y / max(bbox.size.y, 1.0) * 0.8
-	zoom = Vector2.ONE * min(scale_x, scale_y)
+	# Clamp to avoid divide-by-zero when all bodies are collinear (e.g., on x-axis)
+	var min_span := 200.0
+	var scale_x := vp.x / max(bbox.size.x, min_span) * 0.7
+	var scale_y := vp.y / max(bbox.size.y, min_span) * 0.7
+	zoom = Vector2.ONE * clamp(min(scale_x, scale_y), 0.001, 100.0)

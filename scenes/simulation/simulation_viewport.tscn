@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://simvp_01"]
+[gd_scene load_steps=5 format=3 uid="uid://simvp_01"]
 
 [ext_resource type="Script" path="res://scripts/nodes/simulation_viewport.gd" id="1_simvp"]
 [ext_resource type="Script" path="res://scripts/nodes/camera_controller.gd" id="2_camct"]
+[ext_resource type="Script" path="res://scripts/nodes/space_background.gd" id="3_bg"]
+[ext_resource type="Script" path="res://scripts/nodes/grid_renderer.gd" id="4_grid"]
 
 [node name="SimulationViewport" type="SubViewportContainer"]
 anchor_right = 1.0
@@ -11,7 +13,13 @@ script = ExtResource("1_simvp")
 
 [node name="SubViewport" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)
-render_target_update_mode = 3
+render_target_update_mode = 4
+
+[node name="SpaceBackground" type="Node2D" parent="SubViewport"]
+script = ExtResource("3_bg")
+
+[node name="GridRenderer" type="Node2D" parent="SubViewport"]
+script = ExtResource("4_grid")
 
 [node name="BodyContainer" type="Node2D" parent="SubViewport"]
 

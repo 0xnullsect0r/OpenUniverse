@@ -24,6 +24,11 @@ func _ready() -> void:
 	# Default scenario
 	UniverseManager.load_scenario("res://data/scenarios/solar_system.json")
 
+	# Wait two frames so BodyNodes are spawned and positioned, then auto-frame
+	await get_tree().process_frame
+	await get_tree().process_frame
+	_on_focus_all()
+
 func _wire_toolbar() -> void:
 	var spawn_btn   := _hud.get_node("ToolbarTop/SpawnBtn")
 	var scen_btn    := _hud.get_node("ToolbarTop/ScenariosBtn")
