@@ -82,16 +82,31 @@ func _apply_scenario_data(data: Dictionary) -> void:
 			float(bd.get("velocity", [0.0, 0.0])[1])
 		)
 		var body = spawn_body(type_int, pos, vel, bd)
-		# Apply extra fields from JSON
-		if bd.has("name"):         body.display_name         = bd["name"]
-		if bd.has("mass"):         body.mass                 = float(bd["mass"])
-		if bd.has("radius"):       body.radius               = float(bd["radius"])
+		# Core properties
+		if bd.has("name"):               body.display_name         = bd["name"]
+		if bd.has("mass"):               body.mass                 = float(bd["mass"])
+		if bd.has("radius"):             body.radius               = float(bd["radius"])
 		if bd.has("surface_temperature"): body.surface_temperature = float(bd["surface_temperature"])
-		if bd.has("age_myr"):      body.age                  = float(bd["age_myr"])
-		if bd.has("luminosity"):   body.luminosity           = float(bd["luminosity"])
-		if bd.has("greenhouse_factor"): body.greenhouse_factor = float(bd["greenhouse_factor"])
+		if bd.has("age_myr"):            body.age                  = float(bd["age_myr"])
+		if bd.has("luminosity"):         body.luminosity           = float(bd["luminosity"])
+		if bd.has("greenhouse_factor"):  body.greenhouse_factor    = float(bd["greenhouse_factor"])
 		if bd.has("atmosphere_pressure"): body.atmosphere_pressure = float(bd["atmosphere_pressure"])
-		if bd.has("spectral_class"): body.spectral_class = _spectral_class_to_int(bd["spectral_class"])
+		if bd.has("spectral_class"):     body.spectral_class       = _spectral_class_to_int(bd["spectral_class"])
+		if bd.has("axial_tilt"):         body.axial_tilt           = float(bd["axial_tilt"])
+		# Atmosphere composition
+		if bd.has("atm_n2"):         body.atm_n2         = float(bd["atm_n2"])
+		if bd.has("atm_o2"):         body.atm_o2         = float(bd["atm_o2"])
+		if bd.has("atm_co2"):        body.atm_co2        = float(bd["atm_co2"])
+		if bd.has("atm_methane"):    body.atm_methane    = float(bd["atm_methane"])
+		if bd.has("atm_h2"):         body.atm_h2         = float(bd["atm_h2"])
+		if bd.has("atm_water_vapor"):body.atm_water_vapor = float(bd["atm_water_vapor"])
+		# Surface materials
+		if bd.has("surface_water"):  body.surface_water  = float(bd["surface_water"])
+		if bd.has("surface_ice"):    body.surface_ice    = float(bd["surface_ice"])
+		if bd.has("surface_rock"):   body.surface_rock   = float(bd["surface_rock"])
+		if bd.has("surface_iron"):   body.surface_iron   = float(bd["surface_iron"])
+		# Rings
+		if bd.has("has_rings"):      body.has_rings      = bool(bd["has_rings"])
 		body.update_derived_properties()
 
 # -------------------------------------------------------

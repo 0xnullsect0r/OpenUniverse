@@ -1,0 +1,32 @@
+{
+  "name": "Three-Body Problem",
+  "description": "A chaotic 3-star system — the figure-eight orbit. Initially stable, but any perturbation leads to chaos. Inspired by Liu Cixin's Trisolaris.",
+  "bodies": [
+    {
+      "name": "Trisolaris Alpha", "type": "STAR", "spectral_class": "G",
+      "mass": 1.0, "radius": 1.0,
+      "position": [-1.0, 0.0], "velocity": [0.0, -0.4712],
+      "surface_temperature": 5778.0, "age_myr": 3000.0
+    },
+    {
+      "name": "Trisolaris Beta", "type": "STAR", "spectral_class": "G",
+      "mass": 1.0, "radius": 1.0,
+      "position": [1.0, 0.0], "velocity": [0.0, 0.4712],
+      "surface_temperature": 5600.0, "age_myr": 3000.0
+    },
+    {
+      "name": "Trisolaris Gamma", "type": "STAR", "spectral_class": "K",
+      "mass": 1.0, "radius": 0.9,
+      "position": [0.0, 0.8660], "velocity": [0.9424, 0.0],
+      "surface_temperature": 4800.0, "age_myr": 3000.0
+    },
+    {
+      "name": "Trisolaris (Planet)", "type": "PLANET",
+      "mass": 3.0e-6, "radius": 0.0092,
+      "position": [0.0, -2.5], "velocity": [2.0, 0.0],
+      "surface_temperature": 250.0, "atmosphere_pressure": 0.8,
+      "atm_n2": 0.78, "atm_o2": 0.21,
+      "surface_water": 0.3, "surface_ice": 0.2, "surface_rock": 0.5
+    }
+  ]
+}

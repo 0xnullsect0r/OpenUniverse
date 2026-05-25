@@ -1,0 +1,38 @@
+{
+  "name": "Venus vs Earth — Climate Comparison",
+  "description": "Earth and Venus started similarly but took radically different paths. Compare their climates. Try adding CO₂ to Earth or stripping Venus's atmosphere.",
+  "bodies": [
+    {
+      "name": "Sun", "type": "STAR", "spectral_class": "G",
+      "mass": 1.0, "radius": 1.0,
+      "position": [0.0, 0.0], "velocity": [0.0, 0.0],
+      "surface_temperature": 5778.0, "luminosity": 1.0
+    },
+    {
+      "name": "Venus (Hellworld)", "type": "PLANET",
+      "mass": 2.45e-6, "radius": 0.00868,
+      "position": [0.723, 0.0], "velocity": [0.0, 7.39],
+      "surface_temperature": 737.0, "atmosphere_pressure": 92.0,
+      "atm_co2": 0.965, "atm_n2": 0.035, "atm_o2": 0.0,
+      "surface_rock": 0.97, "surface_iron": 0.03,
+      "greenhouse_factor": 2.2
+    },
+    {
+      "name": "Earth", "type": "PLANET",
+      "mass": 3.003e-6, "radius": 0.00917,
+      "position": [1.0, 0.0], "velocity": [0.0, 6.283],
+      "surface_temperature": 288.0, "atmosphere_pressure": 1.0,
+      "atm_n2": 0.78, "atm_o2": 0.21, "atm_co2": 0.0004, "atm_water_vapor": 0.01,
+      "surface_water": 0.71, "surface_ice": 0.03, "surface_rock": 0.26,
+      "greenhouse_factor": 1.15
+    },
+    {
+      "name": "Mars (Cold Desert)", "type": "PLANET",
+      "mass": 3.23e-7, "radius": 0.00487,
+      "position": [1.524, 0.0], "velocity": [0.0, 5.086],
+      "surface_temperature": 210.0, "atmosphere_pressure": 0.006,
+      "atm_co2": 0.96, "atm_n2": 0.02,
+      "surface_ice": 0.10, "surface_rock": 0.90
+    }
+  ]
+}

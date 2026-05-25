@@ -54,7 +54,11 @@ func _resolve(a: CelestialBody, b: CelestialBody) -> void:
 		_pending_fragments.append([a, b])
 
 func _do_merge(big: CelestialBody, small: CelestialBody) -> void:
-	# Conserve momentum; big absorbs small
+	# Kinetic energy of impact → heat
+	var rel_vel := (big.velocity - small.velocity).length()
+	var impact_ke := 0.5 * small.mass * rel_vel * rel_vel  # sim units
+	var impact_pos := (big.position + small.position) * 0.5
+
 	var total_mass := big.mass + small.mass
 	big.velocity = (big.velocity * big.mass + small.velocity * small.mass) / total_mass
 	big.mass = total_mass
@@ -62,8 +66,14 @@ func _do_merge(big: CelestialBody, small: CelestialBody) -> void:
 	big.surface_temperature = (
 		(big.surface_temperature * big.mass + small.surface_temperature * small.mass) / total_mass
 	)
+	# Impact heating — kinetic energy heats the body
+	big.surface_temperature += impact_ke * 1e6
+	big.impact_timer = clamp(impact_ke * 1e5, 2.0, 10.0)
+	big.impact_energy = impact_ke
+
 	big.update_derived_properties()
 	EventBus.collision_occurred.emit(big.id, small.id, big.id)
+	EventBus.impact_flash.emit(impact_pos, impact_ke)
 	UniverseManager.destroy_body(small.id)
 
 func _do_fragment(a: CelestialBody, b: CelestialBody) -> void:

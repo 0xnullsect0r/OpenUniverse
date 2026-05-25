@@ -12,10 +12,17 @@
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_hud")
 
+[node name="SupernovaFlash" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(1.0, 0.85, 0.4, 0.0)
+visible = false
+mouse_filter = 2
+
 [node name="TopBar" type="HBoxContainer" parent="."]
 anchor_right = 1.0
 layout_direction = 0
-theme_override_constants/separation = 16
+theme_override_constants/separation = 12
 offset_bottom = 40
 
 [node name="BodyCount" type="Label" parent="TopBar"]
@@ -28,8 +35,15 @@ vertical_alignment = 1
 theme_override_colors/font_color = Color(0.7, 0.9, 1.0, 1.0)
 
 [node name="SpeedLabel" type="Label" parent="TopBar"]
-text = "1x"
+text = "▶ 1x"
 vertical_alignment = 1
+custom_minimum_size = Vector2(80, 0)
+
+[node name="ToolLabel" type="Label" parent="TopBar"]
+text = "⬆ Select"
+vertical_alignment = 1
+theme_override_colors/font_color = Color(1.0, 1.0, 1.0, 0.7)
+custom_minimum_size = Vector2(120, 0)
 
 [node name="ReversedBanner" type="Label" parent="TopBar"]
 text = "⚠ REVERSED REALITY ⚠"
@@ -43,11 +57,96 @@ anchor_left = 0.5
 anchor_right = 0.5
 offset_top = 50
 offset_bottom = 75
-offset_left = -300
-offset_right = 300
+offset_left = -350
+offset_right = 350
 text = ""
 horizontal_alignment = 1
 theme_override_colors/font_color = Color(1.0, 0.9, 0.5, 1.0)
+
+[node name="ToolbarTop" type="HBoxContainer" parent="."]
+anchor_right = 0.5
+anchor_left = 0.5
+offset_top = 45
+offset_bottom = 82
+offset_left = -320
+offset_right = 320
+theme_override_constants/separation = 4
+
+[node name="SpawnBtn" type="Button" parent="ToolbarTop"]
+text = "Spawn"
+[node name="ScenariosBtn" type="Button" parent="ToolbarTop"]
+text = "Scenarios"
+[node name="SettingsBtn" type="Button" parent="ToolbarTop"]
+text = "Settings"
+[node name="FocusAllBtn" type="Button" parent="ToolbarTop"]
+text = "Focus All"
+[node name="ClearBtn" type="Button" parent="ToolbarTop"]
+text = "Clear"
+[node name="Sep1" type="VSeparator" parent="ToolbarTop"]
+[node name="LaserBtn" type="Button" parent="ToolbarTop"]
+text = "🔥 Heat"
+tooltip_text = "Laser Heat tool (L)"
+[node name="CoolBtn" type="Button" parent="ToolbarTop"]
+text = "❄ Cool"
+tooltip_text = "Laser Cool tool"
+[node name="PushBtn" type="Button" parent="ToolbarTop"]
+text = "→ Push"
+tooltip_text = "Push tool (P)"
+[node name="Sep2" type="VSeparator" parent="ToolbarTop"]
+[node name="StepBtn" type="Button" parent="ToolbarTop"]
+text = "Step ."
+tooltip_text = "Step one frame (.)"
+
+[node name="ViewsPanel" type="PanelContainer" parent="."]
+anchor_right = 0.5
+anchor_left = 0.5
+offset_top = 86
+offset_bottom = 120
+offset_left = -320
+offset_right = 320
+
+[node name="ViewsHBox" type="HBoxContainer" parent="ViewsPanel"]
+theme_override_constants/separation = 6
+
+[node name="ViewModeLabel" type="Label" parent="ViewsPanel/ViewsHBox"]
+text = "View:"
+vertical_alignment = 1
+
+[node name="NormalBtn" type="Button" parent="ViewsPanel/ViewsHBox"]
+text = "Normal"
+toggle_mode = true
+button_pressed = true
+
+[node name="TempBtn" type="Button" parent="ViewsPanel/ViewsHBox"]
+text = "Temperature"
+toggle_mode = true
+
+[node name="DayBtn" type="Button" parent="ViewsPanel/ViewsHBox"]
+text = "Daylight"
+toggle_mode = true
+
+[node name="VSep1" type="VSeparator" parent="ViewsPanel/ViewsHBox"]
+
+[node name="OrbitsCheck" type="CheckBox" parent="ViewsPanel/ViewsHBox"]
+text = "Orbits"
+button_pressed = true
+
+[node name="VelCheck" type="CheckBox" parent="ViewsPanel/ViewsHBox"]
+text = "Velocity"
+
+[node name="HZCheck" type="CheckBox" parent="ViewsPanel/ViewsHBox"]
+text = "Hab Zone"
+button_pressed = true
+
+[node name="NamesCheck" type="CheckBox" parent="ViewsPanel/ViewsHBox"]
+text = "Names"
+button_pressed = true
+
+[node name="GridCheck" type="CheckBox" parent="ViewsPanel/ViewsHBox"]
+text = "Grid"
+
+[node name="HillCheck" type="CheckBox" parent="ViewsPanel/ViewsHBox"]
+text = "Hill"
 
 [node name="LeftPanel" type="PanelContainer" parent="."]
 anchor_bottom = 0.8
@@ -67,78 +166,352 @@ script = ExtResource("2_blist")
 [node name="RightPanel" type="PanelContainer" parent="."]
 anchor_left = 1.0
 anchor_right = 1.0
-anchor_bottom = 0.9
-offset_left = -280
+anchor_bottom = 1.0
+anchor_top = 0.0
+offset_left = -290
+offset_bottom = -60
 script = ExtResource("3_insp")
 
-[node name="VBox" type="VBoxContainer" parent="RightPanel"]
+[node name="ScrollContainer" type="ScrollContainer" parent="RightPanel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
 
-[node name="NameLabel" type="Label" parent="RightPanel/VBox"]
+[node name="VBox" type="VBoxContainer" parent="RightPanel/ScrollContainer"]
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="IdentSection" type="VBoxContainer" parent="RightPanel/ScrollContainer/VBox"]
+
+[node name="IdentHeader" type="Label" parent="RightPanel/ScrollContainer/VBox/IdentSection"]
+text = "— IDENTITY —"
+theme_override_colors/font_color = Color(0.7, 0.85, 1.0, 1.0)
+theme_override_font_sizes/font_size = 11
+
+[node name="NameEdit" type="LineEdit" parent="RightPanel/ScrollContainer/VBox/IdentSection"]
+placeholder_text = "Body name"
+size_flags_horizontal = 3
+
+[node name="TypeLabel" type="Label" parent="RightPanel/ScrollContainer/VBox/IdentSection"]
 text = "Select a body"
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 15
 
-[node name="TypeLabel" type="Label" parent="RightPanel/VBox"]
+[node name="IdLabel" type="Label" parent="RightPanel/ScrollContainer/VBox/IdentSection"]
 text = ""
+theme_override_colors/font_color = Color(0.6, 0.6, 0.6, 1.0)
 
-[node name="MassRow" type="HBoxContainer" parent="RightPanel/VBox"]
-[node name="MassLbl" type="Label" parent="RightPanel/VBox/MassRow"]
+[node name="PhysSection" type="VBoxContainer" parent="RightPanel/ScrollContainer/VBox"]
+
+[node name="PhysHeader" type="Label" parent="RightPanel/ScrollContainer/VBox/PhysSection"]
+text = "— PHYSICAL —"
+theme_override_colors/font_color = Color(0.7, 0.85, 1.0, 1.0)
+theme_override_font_sizes/font_size = 11
+
+[node name="MassRow" type="HBoxContainer" parent="RightPanel/ScrollContainer/VBox/PhysSection"]
+[node name="MassLbl" type="Label" parent="RightPanel/ScrollContainer/VBox/PhysSection/MassRow"]
 text = "Mass (M☉):"
-custom_minimum_size = Vector2(100, 0)
-[node name="MassSpin" type="SpinBox" parent="RightPanel/VBox/MassRow"]
+custom_minimum_size = Vector2(90, 0)
+vertical_alignment = 1
+[node name="MassSpin" type="SpinBox" parent="RightPanel/ScrollContainer/VBox/PhysSection/MassRow"]
 min_value = 0.0
-max_value = 1000000.0
+max_value = 1000000000.0
 step = 0.001
 value = 1.0
+size_flags_horizontal = 3
 
-[node name="RadiusRow" type="HBoxContainer" parent="RightPanel/VBox"]
-[node name="RadiusLbl" type="Label" parent="RightPanel/VBox/RadiusRow"]
+[node name="RadiusRow" type="HBoxContainer" parent="RightPanel/ScrollContainer/VBox/PhysSection"]
+[node name="RadiusLbl" type="Label" parent="RightPanel/ScrollContainer/VBox/PhysSection/RadiusRow"]
 text = "Radius (R☉):"
-custom_minimum_size = Vector2(100, 0)
-[node name="RadiusSpin" type="SpinBox" parent="RightPanel/VBox/RadiusRow"]
+custom_minimum_size = Vector2(90, 0)
+vertical_alignment = 1
+[node name="RadiusSpin" type="SpinBox" parent="RightPanel/ScrollContainer/VBox/PhysSection/RadiusRow"]
 min_value = 0.0
-max_value = 10000.0
-step = 0.001
+max_value = 100000.0
+step = 0.0001
 value = 1.0
+size_flags_horizontal = 3
 
-[node name="TempRow" type="HBoxContainer" parent="RightPanel/VBox"]
-[node name="TempLbl" type="Label" parent="RightPanel/VBox/TempRow"]
+[node name="DensityLabel" type="Label" parent="RightPanel/ScrollContainer/VBox/PhysSection"]
+text = "Density: — g/cm³"
+theme_override_font_sizes/font_size = 11
+
+[node name="GravityLabel" type="Label" parent="RightPanel/ScrollContainer/VBox/PhysSection"]
+text = "Surface g: — m/s²"
+theme_override_font_sizes/font_size = 11
+
+[node name="EscapeLabel" type="Label" parent="RightPanel/ScrollContainer/VBox/PhysSection"]
+text = "Escape v: —"
+theme_override_font_sizes/font_size = 11
+
+[node name="TiltRow" type="HBoxContainer" parent="RightPanel/ScrollContainer/VBox/PhysSection"]
+[node name="TiltLbl" type="Label" parent="RightPanel/ScrollContainer/VBox/PhysSection/TiltRow"]
+text = "Axial Tilt (°):"
+custom_minimum_size = Vector2(90, 0)
+vertical_alignment = 1
+[node name="TiltSpin" type="SpinBox" parent="RightPanel/ScrollContainer/VBox/PhysSection/TiltRow"]
+min_value = 0.0
+max_value = 180.0
+step = 0.1
+value = 0.0
+size_flags_horizontal = 3
+
+[node name="SpinRow" type="HBoxContainer" parent="RightPanel/ScrollContainer/VBox/PhysSection"]
+[node name="SpinLbl" type="Label" parent="RightPanel/ScrollContainer/VBox/PhysSection/SpinRow"]
+text = "Spin (rad/yr):"
+custom_minimum_size = Vector2(90, 0)
+vertical_alignment = 1
+[node name="SpinSpin" type="SpinBox" parent="RightPanel/ScrollContainer/VBox/PhysSection/SpinRow"]
+min_value = -1000.0
+max_value = 1000.0
+step = 0.001
+value = 0.0
+size_flags_horizontal = 3
+
+[node name="ThermalSection" type="VBoxContainer" parent="RightPanel/ScrollContainer/VBox"]
+
+[node name="ThermalHeader" type="Label" parent="RightPanel/ScrollContainer/VBox/ThermalSection"]
+text = "— THERMAL —"
+theme_override_colors/font_color = Color(0.7, 0.85, 1.0, 1.0)
+theme_override_font_sizes/font_size = 11
+
+[node name="TempRow" type="HBoxContainer" parent="RightPanel/ScrollContainer/VBox/ThermalSection"]
+[node name="TempLbl" type="Label" parent="RightPanel/ScrollContainer/VBox/ThermalSection/TempRow"]
 text = "Temp (K):"
-custom_minimum_size = Vector2(100, 0)
-[node name="TempSpin" type="SpinBox" parent="RightPanel/VBox/TempRow"]
+custom_minimum_size = Vector2(90, 0)
+vertical_alignment = 1
+[node name="TempSpin" type="SpinBox" parent="RightPanel/ScrollContainer/VBox/ThermalSection/TempRow"]
 min_value = 2.7
 max_value = 1000000000.0
 step = 1.0
 value = 5778.0
+size_flags_horizontal = 3
 
-[node name="VelLabel" type="Label" parent="RightPanel/VBox"]
-text = "Velocity: —"
-[node name="OrbitLabel" type="Label" parent="RightPanel/VBox"]
+[node name="LumLabel" type="Label" parent="RightPanel/ScrollContainer/VBox/ThermalSection"]
+text = ""
+theme_override_font_sizes/font_size = 11
+
+[node name="AlbedoLabel" type="Label" parent="RightPanel/ScrollContainer/VBox/ThermalSection"]
+text = ""
+theme_override_font_sizes/font_size = 11
+
+[node name="StageLabel" type="Label" parent="RightPanel/ScrollContainer/VBox/ThermalSection"]
+text = ""
+theme_override_font_sizes/font_size = 11
+visible = false
+
+[node name="SupernovaBtn" type="Button" parent="RightPanel/ScrollContainer/VBox/ThermalSection"]
+text = "☄ Trigger Supernova"
+visible = false
+theme_override_colors/font_color = Color(1.0, 0.4, 0.1, 1.0)
+
+[node name="OrbitalSection" type="VBoxContainer" parent="RightPanel/ScrollContainer/VBox"]
+
+[node name="OrbitalHeader" type="Label" parent="RightPanel/ScrollContainer/VBox/OrbitalSection"]
+text = "— ORBITAL —"
+theme_override_colors/font_color = Color(0.7, 0.85, 1.0, 1.0)
+theme_override_font_sizes/font_size = 11
+
+[node name="VelLabel" type="Label" parent="RightPanel/ScrollContainer/VBox/OrbitalSection"]
+text = "Speed: —"
+theme_override_font_sizes/font_size = 11
+
+[node name="OrbitLabel" type="Label" parent="RightPanel/ScrollContainer/VBox/OrbitalSection"]
 text = "No orbit"
-[node name="StageLabel" type="Label" parent="RightPanel/VBox"]
-text = ""
-[node name="LumLabel" type="Label" parent="RightPanel/VBox"]
-text = ""
-[node name="EntropyLabel" type="Label" parent="RightPanel/VBox"]
-text = "Entropy: 1.000 ↑"
+theme_override_font_sizes/font_size = 11
 
-[node name="HabitableRow" type="HBoxContainer" parent="RightPanel/VBox"]
-[node name="HabitableLbl" type="Label" parent="RightPanel/VBox/HabitableRow"]
+[node name="EccLabel" type="Label" parent="RightPanel/ScrollContainer/VBox/OrbitalSection"]
+text = ""
+theme_override_font_sizes/font_size = 11
+
+[node name="PeriLabel" type="Label" parent="RightPanel/ScrollContainer/VBox/OrbitalSection"]
+text = ""
+theme_override_font_sizes/font_size = 11
+
+[node name="HillLabel" type="Label" parent="RightPanel/ScrollContainer/VBox/OrbitalSection"]
+text = ""
+theme_override_font_sizes/font_size = 11
+
+[node name="VelEditRow" type="HBoxContainer" parent="RightPanel/ScrollContainer/VBox/OrbitalSection"]
+[node name="VelXLbl" type="Label" parent="RightPanel/ScrollContainer/VBox/OrbitalSection/VelEditRow"]
+text = "Vx:"
+vertical_alignment = 1
+[node name="VelXSpin" type="SpinBox" parent="RightPanel/ScrollContainer/VBox/OrbitalSection/VelEditRow"]
+min_value = -10000.0
+max_value = 10000.0
+step = 0.0001
+value = 0.0
+size_flags_horizontal = 3
+[node name="VelYLbl" type="Label" parent="RightPanel/ScrollContainer/VBox/OrbitalSection/VelEditRow"]
+text = " Vy:"
+vertical_alignment = 1
+[node name="VelYSpin" type="SpinBox" parent="RightPanel/ScrollContainer/VBox/OrbitalSection/VelEditRow"]
+min_value = -10000.0
+max_value = 10000.0
+step = 0.0001
+value = 0.0
+size_flags_horizontal = 3
+
+[node name="AtmSection" type="VBoxContainer" parent="RightPanel/ScrollContainer/VBox"]
+
+[node name="AtmHeader" type="Label" parent="RightPanel/ScrollContainer/VBox/AtmSection"]
+text = "— ATMOSPHERE —"
+theme_override_colors/font_color = Color(0.7, 0.85, 1.0, 1.0)
+theme_override_font_sizes/font_size = 11
+
+[node name="PressureRow" type="HBoxContainer" parent="RightPanel/ScrollContainer/VBox/AtmSection"]
+[node name="PressureLbl" type="Label" parent="RightPanel/ScrollContainer/VBox/AtmSection/PressureRow"]
+text = "Pressure (bar):"
+custom_minimum_size = Vector2(90, 0)
+vertical_alignment = 1
+[node name="PressureSpin" type="SpinBox" parent="RightPanel/ScrollContainer/VBox/AtmSection/PressureRow"]
+min_value = 0.0
+max_value = 10000.0
+step = 0.001
+value = 0.0
+size_flags_horizontal = 3
+
+[node name="CO2Row" type="HBoxContainer" parent="RightPanel/ScrollContainer/VBox/AtmSection"]
+[node name="CO2Label" type="Label" parent="RightPanel/ScrollContainer/VBox/AtmSection/CO2Row"]
+text = "CO₂: 0.0%"
+custom_minimum_size = Vector2(72, 0)
+vertical_alignment = 1
+[node name="CO2Slider" type="HSlider" parent="RightPanel/ScrollContainer/VBox/AtmSection/CO2Row"]
+min_value = 0.0
+max_value = 1.0
+step = 0.001
+value = 0.0
+size_flags_horizontal = 3
+
+[node name="N2Row" type="HBoxContainer" parent="RightPanel/ScrollContainer/VBox/AtmSection"]
+[node name="N2Label" type="Label" parent="RightPanel/ScrollContainer/VBox/AtmSection/N2Row"]
+text = "N₂:  0.0%"
+custom_minimum_size = Vector2(72, 0)
+vertical_alignment = 1
+[node name="N2Slider" type="HSlider" parent="RightPanel/ScrollContainer/VBox/AtmSection/N2Row"]
+min_value = 0.0
+max_value = 1.0
+step = 0.001
+value = 0.0
+size_flags_horizontal = 3
+
+[node name="O2Row" type="HBoxContainer" parent="RightPanel/ScrollContainer/VBox/AtmSection"]
+[node name="O2Label" type="Label" parent="RightPanel/ScrollContainer/VBox/AtmSection/O2Row"]
+text = "O₂:  0.0%"
+custom_minimum_size = Vector2(72, 0)
+vertical_alignment = 1
+[node name="O2Slider" type="HSlider" parent="RightPanel/ScrollContainer/VBox/AtmSection/O2Row"]
+min_value = 0.0
+max_value = 1.0
+step = 0.001
+value = 0.0
+size_flags_horizontal = 3
+
+[node name="MethaneRow" type="HBoxContainer" parent="RightPanel/ScrollContainer/VBox/AtmSection"]
+[node name="MethaneLbl" type="Label" parent="RightPanel/ScrollContainer/VBox/AtmSection/MethaneRow"]
+text = "CH₄:"
+custom_minimum_size = Vector2(72, 0)
+vertical_alignment = 1
+[node name="MethaneSlider" type="HSlider" parent="RightPanel/ScrollContainer/VBox/AtmSection/MethaneRow"]
+min_value = 0.0
+max_value = 1.0
+step = 0.001
+value = 0.0
+size_flags_horizontal = 3
+
+[node name="H2Row" type="HBoxContainer" parent="RightPanel/ScrollContainer/VBox/AtmSection"]
+[node name="H2Lbl" type="Label" parent="RightPanel/ScrollContainer/VBox/AtmSection/H2Row"]
+text = "H₂: "
+custom_minimum_size = Vector2(72, 0)
+vertical_alignment = 1
+[node name="H2Slider" type="HSlider" parent="RightPanel/ScrollContainer/VBox/AtmSection/H2Row"]
+min_value = 0.0
+max_value = 1.0
+step = 0.001
+value = 0.0
+size_flags_horizontal = 3
+
+[node name="AddButtons" type="HBoxContainer" parent="RightPanel/ScrollContainer/VBox/AtmSection"]
+theme_override_constants/separation = 3
+
+[node name="AddWaterBtn" type="Button" parent="RightPanel/ScrollContainer/VBox/AtmSection/AddButtons"]
+text = "+H₂O"
+tooltip_text = "Add water"
+[node name="AddCO2Btn" type="Button" parent="RightPanel/ScrollContainer/VBox/AtmSection/AddButtons"]
+text = "+CO₂"
+[node name="AddN2Btn" type="Button" parent="RightPanel/ScrollContainer/VBox/AtmSection/AddButtons"]
+text = "+N₂"
+[node name="AddO2Btn" type="Button" parent="RightPanel/ScrollContainer/VBox/AtmSection/AddButtons"]
+text = "+O₂"
+[node name="StripAtmBtn" type="Button" parent="RightPanel/ScrollContainer/VBox/AtmSection/AddButtons"]
+text = "Strip"
+tooltip_text = "Strip atmosphere"
+
+[node name="SurfaceSection" type="VBoxContainer" parent="RightPanel/ScrollContainer/VBox"]
+
+[node name="SurfaceHeader" type="Label" parent="RightPanel/ScrollContainer/VBox/SurfaceSection"]
+text = "— SURFACE —"
+theme_override_colors/font_color = Color(0.7, 0.85, 1.0, 1.0)
+theme_override_font_sizes/font_size = 11
+
+[node name="WaterLabel" type="Label" parent="RightPanel/ScrollContainer/VBox/SurfaceSection"]
+text = "Water: 0%  Ice: 0%  Rock: 0%  Iron: 0%"
+theme_override_font_sizes/font_size = 11
+
+[node name="IceLabel" type="Label" parent="RightPanel/ScrollContainer/VBox/SurfaceSection"]
+text = ""
+theme_override_font_sizes/font_size = 11
+
+[node name="RockLabel" type="Label" parent="RightPanel/ScrollContainer/VBox/SurfaceSection"]
+text = ""
+theme_override_font_sizes/font_size = 11
+
+[node name="HabitRow" type="HBoxContainer" parent="RightPanel/ScrollContainer/VBox/SurfaceSection"]
+[node name="HabitLbl" type="Label" parent="RightPanel/ScrollContainer/VBox/SurfaceSection/HabitRow"]
 text = "Habitable:"
-[node name="HabitableDot" type="ColorRect" parent="RightPanel/VBox/HabitableRow"]
+vertical_alignment = 1
+[node name="HabitDot" type="ColorRect" parent="RightPanel/ScrollContainer/VBox/SurfaceSection/HabitRow"]
 custom_minimum_size = Vector2(16, 16)
 color = Color(0.8, 0.2, 0.2, 1.0)
 
-[node name="SpaghWarn" type="Label" parent="RightPanel/VBox"]
+[node name="GreenhouseLabel" type="Label" parent="RightPanel/ScrollContainer/VBox/SurfaceSection"]
+text = "Greenhouse factor: ×1.00"
+theme_override_font_sizes/font_size = 11
+
+[node name="StateSection" type="VBoxContainer" parent="RightPanel/ScrollContainer/VBox"]
+
+[node name="StateHeader" type="Label" parent="RightPanel/ScrollContainer/VBox/StateSection"]
+text = "— STATE —"
+theme_override_colors/font_color = Color(0.7, 0.85, 1.0, 1.0)
+theme_override_font_sizes/font_size = 11
+
+[node name="EntropyLabel" type="Label" parent="RightPanel/ScrollContainer/VBox/StateSection"]
+text = "Entropy: 1.000 ↑"
+theme_override_font_sizes/font_size = 11
+
+[node name="SpaghWarn" type="Label" parent="RightPanel/ScrollContainer/VBox/StateSection"]
 text = "⚠ SPAGHETTIFICATION"
 visible = false
 theme_override_colors/font_color = Color(1.0, 0.2, 0.0, 1.0)
 
-[node name="PinButton" type="Button" parent="RightPanel/VBox"]
+[node name="BHLabel" type="Label" parent="RightPanel/ScrollContainer/VBox/StateSection"]
+text = ""
+visible = false
+theme_override_font_sizes/font_size = 11
+
+[node name="ActionSection" type="HBoxContainer" parent="RightPanel/ScrollContainer/VBox"]
+theme_override_constants/separation = 4
+
+[node name="PinButton" type="Button" parent="RightPanel/ScrollContainer/VBox/ActionSection"]
 text = "Pin"
-[node name="FollowButton" type="Button" parent="RightPanel/VBox"]
+size_flags_horizontal = 3
+[node name="FollowButton" type="Button" parent="RightPanel/ScrollContainer/VBox/ActionSection"]
 text = "Follow"
-[node name="DeleteButton" type="Button" parent="RightPanel/VBox"]
+size_flags_horizontal = 3
+[node name="DeleteButton" type="Button" parent="RightPanel/ScrollContainer/VBox/ActionSection"]
 text = "Delete"
+size_flags_horizontal = 3
+[node name="ImpactButton" type="Button" parent="RightPanel/ScrollContainer/VBox/ActionSection"]
+text = "☄ Impact"
+size_flags_horizontal = 3
 
 [node name="BottomBar" type="HBoxContainer" parent="."]
 anchor_top = 1.0
@@ -174,31 +547,12 @@ size_flags_horizontal = 3
 custom_minimum_size = Vector2(200, 40)
 script = ExtResource("5_scale")
 
-[node name="ToolbarTop" type="HBoxContainer" parent="."]
-anchor_right = 0.5
-anchor_left = 0.5
-offset_top = 45
-offset_bottom = 80
-offset_left = -200
-offset_right = 200
-
-[node name="SpawnBtn" type="Button" parent="ToolbarTop"]
-text = "Spawn"
-[node name="ScenariosBtn" type="Button" parent="ToolbarTop"]
-text = "Scenarios"
-[node name="SettingsBtn" type="Button" parent="ToolbarTop"]
-text = "Settings"
-[node name="FocusAllBtn" type="Button" parent="ToolbarTop"]
-text = "Focus All"
-[node name="ClearBtn" type="Button" parent="ToolbarTop"]
-text = "Clear"
-
 [node name="SpawnMenu" type="PanelContainer" parent="."]
 visible = false
 offset_left = 10
 offset_top = 90
-offset_right = 220
-offset_bottom = 450
+offset_right = 230
+offset_bottom = 480
 script = ExtResource("6_spawn")
 
 [node name="VBox" type="VBoxContainer" parent="SpawnMenu"]
@@ -215,8 +569,8 @@ theme_override_colors/font_color = Color(1.0, 0.8, 0.2, 1.0)
 visible = false
 offset_left = 10
 offset_top = 90
-offset_right = 220
-offset_bottom = 380
+offset_right = 240
+offset_bottom = 440
 script = ExtResource("7_scene")
 
 [node name="VBox" type="VBoxContainer" parent="ScenarioMenu"]
@@ -229,8 +583,8 @@ theme_override_font_sizes/font_size = 14
 visible = false
 offset_left = 10
 offset_top = 90
-offset_right = 400
-offset_bottom = 600
+offset_right = 420
+offset_bottom = 620
 script = ExtResource("8_sett")
 
 [node name="VBox" type="VBoxContainer" parent="SettingsMenu"]

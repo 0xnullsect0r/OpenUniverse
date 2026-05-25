@@ -9,6 +9,7 @@ var _thermal:    ThermalSolver    = ThermalSolver.new()
 var _tidal:      TidalSolver      = TidalSolver.new()
 var _collision:  CollisionSolver  = CollisionSolver.new()
 var _evolution:  StellarEvolution = StellarEvolution.new()
+var _atmosphere: AtmosphereSolver = AtmosphereSolver.new()
 var _rk4:        RK4Integrator    = RK4Integrator.new()
 var _timeline:   Timeline         = Timeline.new()
 
@@ -23,7 +24,10 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	if GameState.is_paused:
-		return
+		if GameState.step_one_frame:
+			GameState.step_one_frame = false
+		else:
+			return
 
 	# dt in sim-years. Negative multiplier → rewind via timeline.
 	var real_dt := delta * REAL_SEC_PER_SIM_YEAR
@@ -60,6 +64,9 @@ func _physics_process(delta: float) -> void:
 
 	# ---- 4. Thermal update ----
 	_thermal.update(bodies, sim_dt)
+
+	# ---- 4b. Atmosphere evolution ----
+	_atmosphere.update(bodies, sim_dt)
 
 	# ---- 5. Tidal forces ----
 	_tidal.update(bodies, sim_dt)
@@ -148,9 +155,19 @@ func _update_orbital_params(bodies: Array) -> void:
 			body.orbital_parent_id = best_parent.id
 			body.semi_major_axis   = best_dist
 			body.orbital_period    = VectorMath.orbital_period(best_parent.mass, best_dist)
+			# Hill sphere: distance at which body dominates its own gravity
+			body.hill_sphere = best_dist * pow(body.mass / (3.0 * best_parent.mass), 1.0 / 3.0)
+			# Eccentricity estimate from current velocity vs circular
+			var v_circ := VectorMath.orbital_velocity(best_parent.mass, best_dist)
+			var v_cur  := body.velocity.length()
+			body.eccentricity = clamp(abs(v_cur - v_circ) / max(v_circ, 0.001), 0.0, 0.99)
+			body.periapsis    = best_dist * (1.0 - body.eccentricity)
+			body.apoapsis     = best_dist * (1.0 + body.eccentricity)
 		else:
 			body.orbital_parent_id = -1
 			body.orbital_period    = 0.0
+			body.hill_sphere       = 0.0
+			body.eccentricity      = 0.0
 
 # -------------------------------------------------------
 # Signals

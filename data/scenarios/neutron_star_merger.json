@@ -1,0 +1,24 @@
+{
+  "name": "Neutron Star Merger (Kilonova)",
+  "description": "Two neutron stars in a tight binary, spiraling toward merger. When they collide: a kilonova — forging gold, platinum, and other heavy elements.",
+  "bodies": [
+    {
+      "name": "NS Alpha", "type": "NEUTRON_STAR",
+      "mass": 1.35, "radius": 0.0000144,
+      "position": [-0.002, 0.0], "velocity": [0.0, -18.5],
+      "surface_temperature": 1000000.0
+    },
+    {
+      "name": "NS Beta", "type": "NEUTRON_STAR",
+      "mass": 1.40, "radius": 0.0000144,
+      "position": [0.002, 0.0], "velocity": [0.0, 17.8],
+      "surface_temperature": 800000.0
+    },
+    {
+      "name": "Companion Star", "type": "STAR", "spectral_class": "B",
+      "mass": 3.0, "radius": 2.5,
+      "position": [5.0, 0.0], "velocity": [0.0, 9.1],
+      "surface_temperature": 15000.0, "age_myr": 200.0
+    }
+  ]
+}

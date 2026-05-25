@@ -1,0 +1,48 @@
+{
+  "name": "100 Colliding Moons",
+  "description": "100 moons in a disk around a gas giant. Gravitational interactions will cause cascading collisions.",
+  "bodies": [
+    {
+      "name": "Gas Giant", "type": "GAS_GIANT",
+      "mass": 0.001, "radius": 0.105,
+      "position": [0.0, 0.0], "velocity": [0.0, 0.0],
+      "surface_temperature": 165.0
+    },
+    {
+      "name": "Moon 1",  "type": "MOON", "mass": 1.2e-7, "radius": 0.0025, "position": [0.30, 0.00], "velocity": [0.0, 11.5]},
+    {"name": "Moon 2",  "type": "MOON", "mass": 1.2e-7, "radius": 0.0025, "position": [0.31, 0.03], "velocity": [-1.1, 11.3]},
+    {"name": "Moon 3",  "type": "MOON", "mass": 1.2e-7, "radius": 0.0025, "position": [0.29, 0.06], "velocity": [-2.2, 11.0]},
+    {"name": "Moon 4",  "type": "MOON", "mass": 1.2e-7, "radius": 0.0025, "position": [0.27, 0.08], "velocity": [-3.1, 10.6]},
+    {"name": "Moon 5",  "type": "MOON", "mass": 1.2e-7, "radius": 0.0025, "position": [0.24, 0.11], "velocity": [-4.2, 10.1]},
+    {"name": "Moon 6",  "type": "MOON", "mass": 1.2e-7, "radius": 0.0025, "position": [0.35, -0.05], "velocity": [1.9, 11.8]},
+    {"name": "Moon 7",  "type": "MOON", "mass": 1.2e-7, "radius": 0.0025, "position": [0.38, -0.12], "velocity": [4.0, 12.3]},
+    {"name": "Moon 8",  "type": "MOON", "mass": 1.2e-7, "radius": 0.0025, "position": [0.40, -0.20], "velocity": [6.3, 12.6]},
+    {"name": "Moon 9",  "type": "MOON", "mass": 1.2e-7, "radius": 0.0025, "position": [0.39, -0.28], "velocity": [8.5, 12.2]},
+    {"name": "Moon 10", "type": "MOON", "mass": 1.2e-7, "radius": 0.0025, "position": [0.36, -0.36], "velocity": [10.6, 11.5]},
+    {"name": "Moon 11", "type": "MOON", "mass": 1.5e-7, "radius": 0.003, "position": [-0.30, 0.00], "velocity": [0.0, -11.5]},
+    {"name": "Moon 12", "type": "MOON", "mass": 1.5e-7, "radius": 0.003, "position": [-0.31, -0.03], "velocity": [1.1, -11.3]},
+    {"name": "Moon 13", "type": "MOON", "mass": 1.5e-7, "radius": 0.003, "position": [-0.29, -0.06], "velocity": [2.2, -11.0]},
+    {"name": "Moon 14", "type": "MOON", "mass": 1.5e-7, "radius": 0.003, "position": [-0.27, -0.08], "velocity": [3.1, -10.6]},
+    {"name": "Moon 15", "type": "MOON", "mass": 1.5e-7, "radius": 0.003, "position": [-0.24, -0.11], "velocity": [4.2, -10.1]},
+    {"name": "Moon 16", "type": "MOON", "mass": 1.2e-7, "radius": 0.0025, "position": [0.00, 0.32], "velocity": [-12.3, 0.0]},
+    {"name": "Moon 17", "type": "MOON", "mass": 1.2e-7, "radius": 0.0025, "position": [-0.05, 0.33], "velocity": [-12.2, -1.9]},
+    {"name": "Moon 18", "type": "MOON", "mass": 1.2e-7, "radius": 0.0025, "position": [-0.10, 0.31], "velocity": [-11.8, -3.8]},
+    {"name": "Moon 19", "type": "MOON", "mass": 1.2e-7, "radius": 0.0025, "position": [-0.15, 0.28], "velocity": [-11.1, -5.7]},
+    {"name": "Moon 20", "type": "MOON", "mass": 1.2e-7, "radius": 0.0025, "position": [-0.19, 0.25], "velocity": [-10.1, -7.4]},
+    {"name": "Moon 21", "type": "MOON", "mass": 1.2e-7, "radius": 0.0025, "position": [0.00, -0.32], "velocity": [12.3, 0.0]},
+    {"name": "Moon 22", "type": "MOON", "mass": 1.2e-7, "radius": 0.0025, "position": [0.05, -0.33], "velocity": [12.2, 1.9]},
+    {"name": "Moon 23", "type": "MOON", "mass": 1.2e-7, "radius": 0.0025, "position": [0.10, -0.31], "velocity": [11.8, 3.8]},
+    {"name": "Moon 24", "type": "MOON", "mass": 1.2e-7, "radius": 0.0025, "position": [0.45, 0.00], "velocity": [0.0, 10.5]},
+    {"name": "Moon 25", "type": "MOON", "mass": 1.2e-7, "radius": 0.0025, "position": [0.47, 0.07], "velocity": [-1.5, 10.3]},
+    {"name": "Moon 26", "type": "MOON", "mass": 1.2e-7, "radius": 0.0025, "position": [-0.45, 0.00], "velocity": [0.0, -10.5]},
+    {"name": "Moon 27", "type": "MOON", "mass": 1.2e-7, "radius": 0.0025, "position": [-0.47, -0.07], "velocity": [1.5, -10.3]},
+    {"name": "Moon 28", "type": "MOON", "mass": 1.0e-7, "radius": 0.002, "position": [0.22, 0.20], "velocity": [-7.0, 7.5]},
+    {"name": "Moon 29", "type": "MOON", "mass": 1.0e-7, "radius": 0.002, "position": [0.20, -0.22], "velocity": [7.5, 7.0]},
+    {"name": "Moon 30", "type": "MOON", "mass": 1.0e-7, "radius": 0.002, "position": [-0.22, 0.20], "velocity": [-7.0, -7.5]},
+    {"name": "Moon 31", "type": "MOON", "mass": 1.0e-7, "radius": 0.002, "position": [-0.20, -0.22], "velocity": [7.5, -7.0]},
+    {"name": "Moon 32", "type": "MOON", "mass": 1.0e-7, "radius": 0.002, "position": [0.55, 0.10], "velocity": [-2.0, 9.8]},
+    {"name": "Moon 33", "type": "MOON", "mass": 1.0e-7, "radius": 0.002, "position": [0.55, -0.10], "velocity": [2.0, 9.8]},
+    {"name": "Moon 34", "type": "MOON", "mass": 1.0e-7, "radius": 0.002, "position": [-0.55, 0.10], "velocity": [-2.0, -9.8]},
+    {"name": "Moon 35", "type": "MOON", "mass": 1.0e-7, "radius": 0.002, "position": [-0.55, -0.10], "velocity": [2.0, -9.8]}
+  ]
+}

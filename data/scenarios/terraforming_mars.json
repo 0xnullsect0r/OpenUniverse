@@ -1,0 +1,35 @@
+{
+  "name": "Terraforming Mars",
+  "description": "Start with Mars as-is: thin CO₂ atmosphere, frozen surface. Your goal: add CO₂ greenhouse gas, water, and move Mars closer to the habitable zone. Use the Add CO₂ and Add Water buttons in the inspector to terraform.",
+  "bodies": [
+    {
+      "name": "Sun", "type": "STAR", "spectral_class": "G",
+      "mass": 1.0, "radius": 1.0,
+      "position": [0.0, 0.0], "velocity": [0.0, 0.0],
+      "surface_temperature": 5778.0, "luminosity": 1.0, "age_myr": 4600.0
+    },
+    {
+      "name": "Earth (reference)", "type": "PLANET",
+      "mass": 3.003e-6, "radius": 0.00917,
+      "position": [1.0, 0.0], "velocity": [0.0, 6.283],
+      "surface_temperature": 288.0, "atmosphere_pressure": 1.0,
+      "atm_n2": 0.78, "atm_o2": 0.21, "atm_co2": 0.0004,
+      "surface_water": 0.71, "surface_ice": 0.03, "surface_rock": 0.26,
+      "greenhouse_factor": 1.15
+    },
+    {
+      "name": "Mars", "type": "PLANET",
+      "mass": 3.23e-7, "radius": 0.00487,
+      "position": [1.524, 0.0], "velocity": [0.0, 5.086],
+      "surface_temperature": 210.0, "atmosphere_pressure": 0.006,
+      "atm_co2": 0.96, "atm_n2": 0.02, "atm_o2": 0.001,
+      "surface_ice": 0.10, "surface_rock": 0.90
+    },
+    {
+      "name": "Phobos", "type": "MOON",
+      "mass": 1.8e-13, "radius": 0.0000163,
+      "position": [1.5241, 0.0], "velocity": [0.0, 12.55],
+      "surface_temperature": 233.0
+    }
+  ]
+}
