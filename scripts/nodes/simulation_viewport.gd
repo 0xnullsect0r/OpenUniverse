@@ -63,7 +63,7 @@ func _try_select(sim_pos: Vector2) -> void:
 	var best_dist := INF
 	for body in bodies:
 		var d := sim_pos.distance_to(body.position)
-		var threshold := max(body.get_visual_radius() * 3.0, 0.05)
+		var threshold := maxf(body.get_visual_radius() * 3.0, 0.05)
 		if d < threshold and d < best_dist:
 			best_dist = d
 			best_body = body

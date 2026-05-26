@@ -106,7 +106,7 @@ func reset() -> void:
 	active_tool = Tool.SELECT
 
 func get_speed_label() -> String:
-	var m := abs(time_multiplier)
+	var m := absf(time_multiplier)
 	if m < 1.0:
 		return "%.3f×" % m
 	elif m < 1000.0:

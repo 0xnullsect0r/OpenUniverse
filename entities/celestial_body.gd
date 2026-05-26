@@ -287,7 +287,7 @@ func is_stellar() -> bool:
 
 func get_temperature_color() -> Color:
 	# False-color map for temperature view: blue(cold)→green→yellow→red(hot)
-	var t := clamp(log(max(surface_temperature, 2.7)) / log(100000.0), 0.0, 1.0)
+	var t := clampf(log(maxf(surface_temperature, 2.7)) / log(100000.0), 0.0, 1.0)
 	if t < 0.25:
 		return Color(0.0, 0.0, t * 4.0)
 	elif t < 0.5:

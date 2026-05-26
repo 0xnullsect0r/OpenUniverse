@@ -45,7 +45,7 @@ func _resolve(a: CelestialBody, b: CelestialBody) -> void:
 		_annihilate(a, b)
 		return
 
-	var ratio := max(a.mass, b.mass) / max(min(a.mass, b.mass), 1e-30)
+	var ratio := maxf(a.mass, b.mass) / maxf(minf(a.mass, b.mass), 1e-30)
 	if ratio >= MERGE_MASS_RATIO:
 		var bigger  := a if a.mass > b.mass else b
 		var smaller := b if a.mass > b.mass else a

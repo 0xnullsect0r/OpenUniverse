@@ -214,9 +214,9 @@ func _draw_surface_details(body: CelestialBody, base_col: Color) -> void:
 				band_col * Color(1,1,1,0.35), _draw_radius * 0.12)
 
 func _draw_heat_glow(body: CelestialBody) -> void:
-	var temp_glow := clamp((body.surface_temperature - 800.0) / 10000.0, 0.0, 1.0)
+	var temp_glow := clampf((body.surface_temperature - 800.0) / 10000.0, 0.0, 1.0)
 	var impact_g  := _impact_glow
-	var intensity := max(temp_glow, impact_g)
+	var intensity := maxf(temp_glow, impact_g)
 	if intensity < 0.01:
 		return
 
@@ -282,7 +282,7 @@ func _draw_orbit_ellipse(body: CelestialBody) -> void:
 	var parent_screen := cam_ctrl.au_to_screen(parent.position)
 	var body_screen   := cam_ctrl.au_to_screen(body.position)
 	var sma_px        := body.semi_major_axis * ppau * zoom
-	var ecc           := clamp(body.eccentricity, 0.0, 0.95)
+	var ecc           := clampf(body.eccentricity, 0.0, 0.95)
 
 	# Draw as ellipse approximation using draw_arc from parent node's local space
 	# We draw in global coords by converting parent position
@@ -304,7 +304,7 @@ func _draw_habitable_zone(body: CelestialBody) -> void:
 	var ppau := cam_ctrl.pixels_per_au
 	var zoom := get_viewport().get_camera_2d().zoom.x
 	# HZ inner/outer edge (simplified: 0.95 * sqrt(L) and 1.37 * sqrt(L) AU)
-	var lum := abs(body.luminosity)
+	var lum := absf(body.luminosity)
 	var hz_inner := 0.95 * sqrt(lum) * ppau * zoom
 	var hz_outer := 1.37 * sqrt(lum) * ppau * zoom
 	draw_arc(Vector2.ZERO, hz_inner, 0.0, TAU, 64, Color(0.1, 0.9, 0.2, 0.15), hz_outer - hz_inner)

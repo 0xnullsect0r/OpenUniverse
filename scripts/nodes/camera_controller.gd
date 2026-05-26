@@ -50,7 +50,7 @@ func _handle_drag(event: InputEventMouseMotion) -> void:
 
 func _zoom_by(factor: float, pivot_screen: Vector2) -> void:
 	var old_zoom := zoom.x
-	var new_zoom := clamp(old_zoom * (1.0 - factor), 0.001, 1000.0)
+	var new_zoom := clampf(old_zoom * (1.0 - factor), 0.001, 1000.0)
 
 	# Zoom toward mouse cursor
 	var world_before := (pivot_screen - get_viewport().get_visible_rect().size * 0.5) / old_zoom + position

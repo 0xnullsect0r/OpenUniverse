@@ -67,7 +67,7 @@ func _process(delta: float) -> void:
 	# Supernova flash fade
 	if _supernova_timer > 0.0 and _supernova_flash:
 		_supernova_timer -= delta
-		var alpha := clamp(_supernova_timer / 2.0, 0.0, 0.85)
+		var alpha := clampf(_supernova_timer / 2.0, 0.0, 0.85)
 		_supernova_flash.color.a = alpha
 		if _supernova_timer <= 0.0:
 			_supernova_flash.visible = false

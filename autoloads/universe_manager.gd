@@ -62,7 +62,7 @@ func load_scenario(path: String) -> void:
 		return
 	var json_text := file.get_as_text()
 	file.close()
-	var parsed := JSON.parse_string(json_text)
+	var parsed: Variant = JSON.parse_string(json_text)
 	if parsed == null:
 		push_error("Invalid JSON in scenario: " + path)
 		return

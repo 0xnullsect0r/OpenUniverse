@@ -39,7 +39,7 @@ func seek(target_time: float) -> void:
 		var real_i := (_head + i) % _capacity
 		if real_i >= _snapshots.size():
 			continue
-		var diff := abs(_snapshots[real_i]["time"] - target_time)
+		var diff := absf(_snapshots[real_i]["time"] - target_time)
 		if diff < best_diff:
 			best_diff = diff
 			best_idx  = real_i

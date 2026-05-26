@@ -48,7 +48,7 @@ func _update_equilibrium_temperature(body: CelestialBody, stars: Array, dt: floa
 	if nearest_star == null:
 		return
 
-	var lum := abs(nearest_star.luminosity)  # abs because reverse mode makes it negative
+	var lum := absf(nearest_star.luminosity)  # abs because reverse mode makes it negative
 	var T_eq := ThermalSolver.equilibrium_temperature(
 		lum, nearest_star.radius, nearest_dist, body.albedo, body.greenhouse_factor
 	)
@@ -66,13 +66,13 @@ func _update_ice_albedo_feedback(body: CelestialBody, dt: float) -> void:
 	var rate := 0.001 * dt * PhysicsConstants.ENTROPY_DIRECTION
 	if body.surface_temperature < ICE_FREEZE_TEMP:
 		# Water freezes → more ice → higher albedo
-		var freeze_amt := min(body.surface_water * 0.1 * dt, 0.01)
+		var freeze_amt := minf(body.surface_water * 0.1 * dt, 0.01)
 		body.surface_water -= freeze_amt
 		body.surface_ice   += freeze_amt
 		body.surface_water  = max(body.surface_water, 0.0)
 	elif body.surface_temperature > ICE_MELT_TEMP:
 		# Ice melts → more water → lower albedo
-		var melt_amt := min(body.surface_ice * 0.05 * dt, 0.01)
+		var melt_amt := minf(body.surface_ice * 0.05 * dt, 0.01)
 		body.surface_ice   -= melt_amt
 		body.surface_water += melt_amt
 		body.surface_ice    = max(body.surface_ice, 0.0)
@@ -81,8 +81,8 @@ func _update_water_vapor_feedback(body: CelestialBody, dt: float) -> void:
 	if body.atmosphere_pressure < 0.01:
 		return
 	# At higher temperatures, more water evaporates into atmosphere
-	var evap_fraction := clamp((body.surface_temperature - 250.0) / 200.0, 0.0, 1.0) * 0.001 * dt
-	var evap_amt := min(body.surface_water * evap_fraction, 0.001)
+	var evap_fraction := clampf((body.surface_temperature - 250.0) / 200.0, 0.0, 1.0) * 0.001 * dt
+	var evap_amt := minf(body.surface_water * evap_fraction, 0.001)
 	body.surface_water   -= evap_amt
 	body.atm_water_vapor  = clamp(body.atm_water_vapor + evap_amt * 0.1, 0.0, 0.5)
 	body.surface_water    = max(body.surface_water, 0.0)
@@ -90,7 +90,7 @@ func _update_water_vapor_feedback(body: CelestialBody, dt: float) -> void:
 func _update_runaway_greenhouse(body: CelestialBody, dt: float) -> void:
 	if body.surface_temperature > OCEAN_EVAP_TEMP and body.surface_water > 0.0:
 		# Venus-style runaway: all water evaporates into steam
-		var evap := min(body.surface_water, 0.05 * dt)
+		var evap := minf(body.surface_water, 0.05 * dt)
 		body.surface_water    -= evap
 		body.atm_water_vapor   = clamp(body.atm_water_vapor + evap, 0.0, 1.0)
 		body.atmosphere_pressure += evap * 90.0  # massive pressure increase

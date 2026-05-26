@@ -35,7 +35,7 @@ func build(bodies: Array) -> void:
 		positions.append(b.position)
 	var bbox := VectorMath.bounding_box(positions)
 	# Make it square
-	var size := max(bbox.size.x, bbox.size.y)
+	var size := maxf(bbox.size.x, bbox.size.y)
 	bbox = Rect2(bbox.position, Vector2(size, size))
 
 	_root = BHNode.new(bbox)
